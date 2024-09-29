@@ -1,32 +1,31 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn, ManyToOne } from 'typeorm';
-import { User } from './users.entity';
+import { Users } from './users.entity';
 
 @Entity('user_details')
-export class UserDetail {
+export class UserDetails {
   @PrimaryGeneratedColumn()
   id: number;
 
-//   @OneToOne(() => User)
-//   @JoinColumn({ name: 'user_id' })
-//   user: User;
-
-  @Column()
-  user_id: number;
+  @Column({name:'userId'})
+  userId: number;
 
   @Column({nullable:true})
-  profile_photo: string;
+  profilePhoto: string;
 
   @Column()
-  first_name: string;
+  firstName: string;
 
   @Column()
-  last_name: string;
+  lastName: string;
 
-  @Column()
+  @Column({nullable:true})
+  gender: string;
+
+  @Column({nullable:true})
   dateOfBirth: Date;
 
-  @Column({ unique: true })
-  mobile_no: string;
+  @Column({nullable:true})
+  mobileNumber: string;
 
   @CreateDateColumn({type:'timestamp',default:()=>"CURRENT_TIMESTAMP(6)"})
   createdOn: Date;
@@ -34,9 +33,9 @@ export class UserDetail {
   @UpdateDateColumn({type:'timestamp',default:()=>"CURRENT_TIMESTAMP(6)",onUpdate:"CURRENT_TIMESTAMP(6)"})
   modifiedOn:Date;
 
-  @ManyToOne(() => Chall, type => type.challenges)
-  @JoinColumn([{name:'typeId',referencedColumnName:'id'}])
-  ChallengeType: ChallengeType;
+  @OneToOne(() => Users, users => users.UserDetail)
+  @JoinColumn([{name:'userId',referencedColumnName:'id'}])
+  users: Users;
 
 }
 

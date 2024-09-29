@@ -1,13 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Posts } from './posts.entity';
+import { PostedPlatforms } from './posted-platforms.entity';
 
 @Entity('platforms')
-@Unique(['platform_name'])
-export class Platform {
+@Unique(['platformName'])
+export class Platforms {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  platform_name: string;
+  platformName: string;
 
   @CreateDateColumn({type:'timestamp',default:()=>"CURRENT_TIMESTAMP(6)"})
   createdOn: Date;
@@ -15,4 +17,6 @@ export class Platform {
   @UpdateDateColumn({type:'timestamp',default:()=>"CURRENT_TIMESTAMP(6)",onUpdate:"CURRENT_TIMESTAMP(6)"})
   modifiedOn:Date;
 
+  @OneToMany(() => PostedPlatforms, postedPlatforms => postedPlatforms.platforms)
+  postedPlatforms: PostedPlatforms[];
 }

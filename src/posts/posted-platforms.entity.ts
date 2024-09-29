@@ -1,35 +1,53 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
-import { User } from 'src/users/users.entity';
-import { Post } from './posts.entity';
-import { Platform } from './platforms.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
+import { Posts } from './posts.entity';
+import { Platforms } from './platforms.entity';
+import { Users } from 'src/users/users.entity';
 
 @Entity('posted_platforms')
-export class PostedPlatform {
+export class PostedPlatforms {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({name:'userId'})
+  @Column({ name: 'userId' })
   userId: number;
 
-  @Column({name:'contentHistoryId'})
+  @Column({ name: 'postId' })
   postId: number;
 
-  @Column({name:'platformId'})
+  @Column({ name: 'platformId' })
   platformId: number;
 
-//   @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
-//   user: User;
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  createdOn: Date;
 
-//   @ManyToOne(() => Post, (post) => post.id, { onDelete: 'CASCADE' })
-//   post: Post;
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  modifiedOn: Date;
 
-//   @ManyToOne(() => Platform, (platform) => platform.id, { onDelete: 'CASCADE' })
-//   platform: Platform;
+  @ManyToOne(() => Users, (users) => users.postedPlatforms)
+  @JoinColumn([{ name: 'userId', referencedColumnName: 'id' }])
+  users: Users;
 
-@CreateDateColumn({type:'timestamp',default:()=>"CURRENT_TIMESTAMP(6)"})
-createdOn: Date;
+  @ManyToOne(() => Posts, (posts) => posts.postedPlatforms)
+  @JoinColumn([{ name: 'postId', referencedColumnName: 'id' }])
+  posts: Posts;
 
-@UpdateDateColumn({type:'timestamp',default:()=>"CURRENT_TIMESTAMP(6)",onUpdate:"CURRENT_TIMESTAMP(6)"})
-modifiedOn:Date;
-
+  @ManyToOne(() => Platforms, (platforms) => platforms.postedPlatforms)
+  @JoinColumn([{ name: 'platformId', referencedColumnName: 'id' }])
+  platforms: Platforms;
 }

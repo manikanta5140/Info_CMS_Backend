@@ -1,14 +1,17 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, OneToOne } from 'typeorm';
-import { UserDetail } from './user-details.entity';
+import { Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, OneToOne, OneToMany } from 'typeorm';
+import { UserDetails } from './user-details.entity';
+import { ContentHistory } from 'src/content-history/content-history.entity';
+import { Posts } from 'src/posts/posts.entity';
+import { PostedPlatforms } from 'src/posts/posted-platforms.entity';
 
 @Entity('users')
-@Unique(['user_name', 'email'])
-export class User {
+@Unique(['userName', 'email'])
+export class Users {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  user_name: string;
+  userName: string;
 
   @Column()
   email: string;
@@ -16,11 +19,13 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ default: false })
-  is_verified: boolean;
+  // @Column({ default: false })
+  @Column({nullable:true})
+  isVerified: boolean;
 
-  @Column({ nullable: false })
-  verification_code: string;
+  // @Column({ nullable: false })
+  @Column({nullable:true})
+  verificationCode: string;
 
   @CreateDateColumn({type:'timestamp',default:()=>"CURRENT_TIMESTAMP(6)"})
   createdOn: Date;
@@ -28,6 +33,15 @@ export class User {
   @UpdateDateColumn({type:'timestamp',default:()=>"CURRENT_TIMESTAMP(6)",onUpdate:"CURRENT_TIMESTAMP(6)"})
   modifiedOn:Date;
 
-  @OneToOne(() => UserDetail, userDetail => userDetail.User)
-  UserDetail: UserDetail[];
+  @OneToOne(() => UserDetails, userDetail => userDetail.users)
+  UserDetail: UserDetails;
+
+  @OneToMany(() => ContentHistory, contentHistory => contentHistory.users)
+  contentHistory: ContentHistory[];
+
+  @OneToMany(() => Posts, posts => posts.users)
+  posts: Posts[];
+
+  @OneToMany(() => PostedPlatforms, postedPlatforms => postedPlatforms.users)
+  postedPlatforms: PostedPlatforms[];
 }

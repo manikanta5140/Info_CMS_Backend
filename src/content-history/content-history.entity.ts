@@ -1,17 +1,18 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
-import { User } from 'src/users/users.entity';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToOne } from 'typeorm';
+import { Users } from 'src/users/users.entity';
 import { ContentCategory } from './content-category.entity';
+import { Posts } from 'src/posts/posts.entity';
 
 @Entity('content_history')
-export class History {
+export class ContentHistory {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({name:'user_id'})
-  user_id: number;
+  @Column({name:'userId'})
+  userId: number;
 
-  @Column({name:'category_id'})
-  category_id: number;
+  @Column({name:'categoryId'})
+  categoryId: number;
 
   @Column('text')
   prompt: string;
@@ -25,10 +26,14 @@ export class History {
   @UpdateDateColumn({type:'timestamp',default:()=>"CURRENT_TIMESTAMP(6)",onUpdate:"CURRENT_TIMESTAMP(6)"})
   modifiedOn:Date;
 
+  @ManyToOne(() => ContentCategory, contentCategory => contentCategory.contentHistory)
+  @JoinColumn([{name:'categoryId',referencedColumnName:'id'}])
+  contentCategory: ContentCategory;
 
-//   @ManyToOne(() => User, { nullable: false })
-//   user: User;
+  @ManyToOne(() => Users, users => users.contentHistory)
+  @JoinColumn([{name:'userId',referencedColumnName:'id'}])
+  users: Users;
 
-//   @ManyToOne(() => ContentCategory, { nullable: false })
-//   category: ContentCategory;
+  @OneToOne(() => Posts, posts => posts.contentHistory)
+  posts: Posts; 
 }
