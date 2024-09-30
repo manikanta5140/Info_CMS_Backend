@@ -34,7 +34,7 @@ export class Users {
   modifiedOn:Date;
 
   @OneToOne(() => UserDetails, userDetail => userDetail.users)
-  UserDetail: UserDetails;
+  userDetails: UserDetails;
 
   @OneToMany(() => ContentHistory, contentHistory => contentHistory.users)
   contentHistory: ContentHistory[];

@@ -33,7 +33,7 @@ export class UserDetails {
   @UpdateDateColumn({type:'timestamp',default:()=>"CURRENT_TIMESTAMP(6)",onUpdate:"CURRENT_TIMESTAMP(6)"})
   modifiedOn:Date;
 
-  @OneToOne(() => Users, users => users.UserDetail)
+  @OneToOne(() => Users, users => users.userDetails)
   @JoinColumn([{name:'userId',referencedColumnName:'id'}])
   users: Users;
 
