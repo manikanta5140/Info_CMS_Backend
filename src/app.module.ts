@@ -21,6 +21,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PostedPlatforms } from './posts/posted-platforms.entity';
 import { CloudinaryProvider } from './cloudinary/cloudinary';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
+import { MailService } from './mail/mail.service';
 
 @Module({
   imports: [
@@ -85,6 +86,7 @@ import { CloudinaryService } from './cloudinary/cloudinary.service';
     UsersService,
     CloudinaryProvider,
     CloudinaryService,
+    MailService,
   ],
 })
 export class AppModule {}

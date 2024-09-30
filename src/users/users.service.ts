@@ -22,8 +22,8 @@ export class UsersService {
         return await this.usersRepository.findOne({ where: { email }, relations:{userDetails: true}});
       }
     
-      async findOne(id: number): Promise<Users> {
-        return await this.usersRepository.findOneBy({ id });
+      async findById(id: number): Promise<Users> {
+        return await this.usersRepository.findOne({where: { id }, relations: {userDetails: true}});
       }
     
       async create(data: any): Promise<Users> {
@@ -34,7 +34,7 @@ export class UsersService {
         return await this.userDetailsRepository.save(data)
       }
     
-      async update(id: number, user: Users): Promise<Users> {
-        return await this.usersRepository.save(user);
+      async update(id: number, updatedUser: Users): Promise<any> {
+        return await this.usersRepository.update(id,updatedUser);
       }
 }
