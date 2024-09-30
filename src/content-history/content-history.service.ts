@@ -7,27 +7,33 @@ import { Repository } from 'typeorm';
 export class ContentHistoryService {
     constructor(
         @InjectRepository(ContentHistory)
-        private usersRepository: Repository<ContentHistory>
+        private contentHistoryRepository: Repository<ContentHistory>
       ) {}
     
       async findAll(userId: number): Promise<ContentHistory[]> {
-        return await this.usersRepository.find({where:{userId:userId}});
+        return await this.contentHistoryRepository.find({
+          where:{
+            userId:userId
+          }
+        });
       }
     
       async findOne(id: number): Promise<ContentHistory> {
-        return await this.usersRepository.findOneBy({ id });
+        return await this.contentHistoryRepository.findOneBy({ id });
       }
     
       async create(contentHistory: Partial<ContentHistory>): Promise<ContentHistory> {
-        return this.usersRepository.create(contentHistory);
+        contentHistory = this.contentHistoryRepository.create(contentHistory);
+        return await this.contentHistoryRepository.save(contentHistory);
       }
     
-      async update(id: number, user: ContentHistory): Promise<ContentHistory> {
-        return await this.usersRepository.save(user);
+      async update(id: number, updateData: Partial<ContentHistory>): Promise<ContentHistory> {
+        await this.contentHistoryRepository.update(id,updateData);
+        return this.findOne(id);
       }
 
       async delete(id: number): Promise<any> {
-        return await this.usersRepository.delete(id);
+        return await this.contentHistoryRepository.delete(id);
       }
 
 }

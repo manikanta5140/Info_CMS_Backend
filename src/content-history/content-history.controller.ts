@@ -1,52 +1,46 @@
-import { Body, Controller, Post, UseGuards, Request, Get } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Request, Get, Param, Patch, Delete } from '@nestjs/common';
 import { ContentHistoryDto } from './DTOs/content-history.dto';
-import { ContentHistory } from './content-history.entity';
 import { ContentHistoryService } from './content-history.service';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { UpdateContentHistoryDto } from './DTOs/update-content-history.dto';
 
 @Controller('content-history')
 export class ContentHistoryController {
   constructor(
     private contentHistoryService: ContentHistoryService
-  ){}
-    
-    @UseGuards(AuthGuard)
-    @Post()
-    create(@Body() contentHistoryDto: ContentHistoryDto, @Request() req): any {
-        contentHistoryDto.userId = req?.user?.userid;
-        return this.contentHistoryService.create(contentHistoryDto);
-      }
+  ) { }
 
-    @UseGuards(AuthGuard)  
-    @Get()
-    getAllContentHistory(@Request() req): any{
-      console.log(req?.user?.userid);
-      return this.contentHistoryService.findAll(req?.user?.userid);
+  @UseGuards(AuthGuard)
+  @Post()
+  create(@Body() contentHistoryDto: ContentHistoryDto, @Request() req): any {
+    contentHistoryDto.userId = req?.user?.userId;
+    console.log(req.user)
+    return this.contentHistoryService.create(contentHistoryDto);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get()
+  getAllContentHistory(@Request() req): any {
+    console.log(req?.user?.userId);
+    return this.contentHistoryService.findAll(req?.user?.userId);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get(':id')
+  getContentHistoryById(@Param('id') id: number): any {
+    return this.contentHistoryService.findOne(id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Patch(':id')
+  update(@Param('id') id: number, @Body() updateContentHistoryDto: UpdateContentHistoryDto): any {
+    return this.contentHistoryService.update(id, updateContentHistoryDto);
+  }
+
+  
+    @UseGuards(AuthGuard)
+    @Delete(':id')
+    delete(@Param('id') id: number): Promise<void> {
+      return this.contentHistoryService.delete(id);
     }
-    
-    //   @Get()
-    //   async findAllWithRegistrations(@Query('emailId') emailId: string): Promise<Partial<Challenge>[]> {
-    //     console.log(emailId,"EmailID");
-    //     return this.challengeService.findAll(emailId);
-    
-    //     // const challenges = await this.challengeService.findAll();
-    //     // return challenges.map(({ typeId,createdOn,modifiedOn, ...challenge }) => challenge);
-    //   }
-    
-    //   @Get(':id')
-    //   findOne(@Param('id') id: number): Promise<Challenge | null> {
-    //     return this.challengeService.findOne(id);
-    //   }
-    
-    //   @UseGuards(JwtAuthGuard,RolesGuard)
-    //   @Put(':id')
-    //   update(@Param('id') id: number, @Body() updateChallengeDto: UpdateChallengeDto): Promise<Challenge> {
-    //     return this.challengeService.update(id, updateChallengeDto);
-    //   }
-    
-    //   @UseGuards(JwtAuthGuard,RolesGuard)
-    //   @Delete(':id')
-    //   delete(@Param('id') id: number): Promise<void> {
-    //     return this.challengeService.delete(id);
-    //   }
 }
