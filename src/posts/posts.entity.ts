@@ -28,9 +28,6 @@ export class Posts {
   @Column({ nullable: true })
   imageUrl: string;
 
-  @Column({ name: 'platformId' })
-  platformId: number;
-
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',

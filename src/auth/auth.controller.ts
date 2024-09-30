@@ -41,7 +41,7 @@ export class AuthController {
         }
       }
 
-      @Get('login')
+      @Post('login')
       login(@Body() body) {
         return this.authService.authenticate(body);
       }

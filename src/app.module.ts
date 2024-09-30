@@ -19,6 +19,8 @@ import { ContentHistory } from './content-history/content-history.entity';
 import { UserDetails } from './users/user-details.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { PostedPlatforms } from './posts/posted-platforms.entity';
+import { CloudinaryProvider } from './cloudinary/cloudinary';
+import { CloudinaryService } from './cloudinary/cloudinary.service';
 
 @Module({
   imports: [
@@ -42,7 +44,7 @@ import { PostedPlatforms } from './posts/posted-platforms.entity';
           ContentHistory,
           Platforms,
           Posts,
-          PostedPlatforms
+          PostedPlatforms,
         ],
         synchronize: true,
       }),
@@ -81,6 +83,8 @@ import { PostedPlatforms } from './posts/posted-platforms.entity';
     ContentHistoryService,
     PostsService,
     UsersService,
+    CloudinaryProvider,
+    CloudinaryService,
   ],
 })
 export class AppModule {}
