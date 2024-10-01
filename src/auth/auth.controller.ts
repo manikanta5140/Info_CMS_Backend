@@ -43,10 +43,9 @@ export class AuthController {
       lastName,
     );
 
-    if (result) {
-      console.log('in reg', result);
-      this.authService.sendVerificationMail(result);
-    }
+    // if (result) {
+    //   this.authService.sendVerificationMail(result);
+    // }
 
     return this.authService.signIn({
         userId: result?.id,
@@ -65,6 +64,7 @@ export class AuthController {
   async verifyUser(@Param('token') token: string) {
     try {
       const tokenPayload = await this.jwtService.verifyAsync(token);
+      
       if (!tokenPayload || !tokenPayload.sub) {
         throw new BadRequestException('Invalid token!');
       }
@@ -79,7 +79,7 @@ export class AuthController {
         };
       }
       user.isVerified = true;
-      await this.usersService.update(tokenPayload.sub, user);
+      await this.usersService.update(tokenPayload.sub, {isVerified: true});
       return {
         status: HttpStatus.OK,
         message: 'User verified successfully.',

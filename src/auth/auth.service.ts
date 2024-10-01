@@ -5,7 +5,6 @@ import * as bcrypt from 'bcrypt';
 import { Users } from 'src/users/users.entity';
 import { UsersService } from 'src/users/users.service';
 import { LoginDto } from './DTOs/login.dto';
-import * as nodemailer from 'nodemailer';
 import { MailService } from 'src/mail/mail.service';
 
 

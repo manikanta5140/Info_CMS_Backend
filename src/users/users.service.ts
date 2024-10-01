@@ -26,15 +26,19 @@ export class UsersService {
         return await this.usersRepository.findOne({where: { id }, relations: {userDetails: true}});
       }
     
-      async create(data: any): Promise<Users> {
-        return await this.usersRepository.save(data);
+      async create(userData: any): Promise<any> {
+        const newUser = this.usersRepository.create(userData);
+        return await this.usersRepository.save(newUser);
       }
 
       async createUserDetails(data: any): Promise<UserDetails> {
         return await this.userDetailsRepository.save(data)
       }
     
-      async update(id: number, updatedUser: Users): Promise<any> {
+      async update(id: number, updatedUser: Partial<Users>): Promise<any> {
+        console.log(updatedUser)
         return await this.usersRepository.update(id,updatedUser);
       }
 }
+
+

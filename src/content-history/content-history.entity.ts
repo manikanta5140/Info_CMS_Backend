@@ -2,7 +2,6 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 import { Users } from 'src/users/users.entity';
 import { ContentCategory } from './content-category.entity';
 import { Posts } from 'src/posts/posts.entity';
-
 @Entity('content_history')
 export class ContentHistory {
   @PrimaryGeneratedColumn()
