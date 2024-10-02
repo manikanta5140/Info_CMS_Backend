@@ -22,6 +22,7 @@ import { PostedPlatforms } from './posts/posted-platforms.entity';
 import { CloudinaryProvider } from './cloudinary/cloudinary';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { MailService } from './mail/mail.service';
+import { ContentCategoryController } from './content-history/content-category.controller';
 
 @Module({
   imports: [
@@ -77,6 +78,7 @@ import { MailService } from './mail/mail.service';
     ContentHistoryController,
     PostsController,
     UsersController,
+    ContentCategoryController,
   ],
   providers: [
     AppService,

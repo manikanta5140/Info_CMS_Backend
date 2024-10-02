@@ -54,9 +54,9 @@ export class ContentHistoryController {
     return this.contentHistoryService.delete(id);
   }
 
-  @UseGuards(AuthGuard)
-  @Get('/category/list')
-  getAllContentCategory(): any {
-    return this.contentHistoryService.findAllCategory();
-  }
+  // // @UseGuards(AuthGuard)
+  // @Get('/category/list')
+  // getAllContentCategory(): any {
+  //   return this.contentHistoryService.findAllCategory();
+  // }
 }
