@@ -53,4 +53,10 @@ export class ContentHistoryController {
   delete(@Param('id') id: number): Promise<void> {
     return this.contentHistoryService.delete(id);
   }
+
+  @UseGuards(AuthGuard)
+  @Get('/category/list')
+  getAllContentCategory(): any {
+    return this.contentHistoryService.findAllCategory();
+  }
 }
