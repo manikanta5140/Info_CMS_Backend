@@ -43,15 +43,16 @@ export class AuthController {
       lastName,
     );
 
-    // if (result) {
-    //   this.authService.sendVerificationMail(result);
-    // }
+    if (result) {
+      this.authService.sendVerificationMail(result);
+    }
 
     return this.authService.signIn({
-        userId: result?.id,
-        userName: result?.userName,
-        email: result?.email,
-        isVerified: result?.isVerified});
+      userId: result?.id,
+      userName: result?.userName,
+      email: result?.email,
+      isVerified: result?.isVerified,
+    });
   }
 
   @HttpCode(HttpStatus.OK)
@@ -64,7 +65,7 @@ export class AuthController {
   async verifyUser(@Param('token') token: string) {
     try {
       const tokenPayload = await this.jwtService.verifyAsync(token);
-      
+
       if (!tokenPayload || !tokenPayload.sub) {
         throw new BadRequestException('Invalid token!');
       }
@@ -79,7 +80,7 @@ export class AuthController {
         };
       }
       user.isVerified = true;
-      await this.usersService.update(tokenPayload.sub, {isVerified: true});
+      await this.usersService.update(tokenPayload.sub, { isVerified: true });
       return {
         status: HttpStatus.OK,
         message: 'User verified successfully.',
