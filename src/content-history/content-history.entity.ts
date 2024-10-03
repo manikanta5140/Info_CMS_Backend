@@ -1,7 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToOne } from 'typeorm';
 import { Users } from 'src/users/users.entity';
-import { ContentCategory } from './content-category.entity';
+
 import { Posts } from 'src/posts/posts.entity';
+import { ContentCategory } from 'src/Content-category/content-category.entity';
 @Entity('content_history')
 export class ContentHistory {
   @PrimaryGeneratedColumn()

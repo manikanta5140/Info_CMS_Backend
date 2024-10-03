@@ -12,7 +12,6 @@ import { AuthController } from './auth/auth.controller';
 import { ContentHistoryController } from './content-history/content-history.controller';
 import { AuthService } from './auth/auth.service';
 import { Users } from './users/users.entity';
-import { ContentCategory } from './content-history/content-category.entity';
 import { Platforms } from './posts/platforms.entity';
 import { Posts } from './posts/posts.entity';
 import { ContentHistory } from './content-history/content-history.entity';
@@ -22,7 +21,10 @@ import { PostedPlatforms } from './posts/posted-platforms.entity';
 import { CloudinaryProvider } from './cloudinary/cloudinary';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { MailService } from './mail/mail.service';
-import { ContentCategoryController } from './content-history/content-category.controller';
+import { ContentCategory } from './Content-category/content-category.entity';
+import { ContentCategoryController } from './Content-category/content-category.controller';
+import { ContentCategoryService } from './Content-category/content-category.service';
+
 
 @Module({
   imports: [
@@ -89,6 +91,7 @@ import { ContentCategoryController } from './content-history/content-category.co
     CloudinaryProvider,
     CloudinaryService,
     MailService,
+    ContentCategoryService
   ],
 })
 export class AppModule {}

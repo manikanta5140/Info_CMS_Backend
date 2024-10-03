@@ -2,16 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ContentHistory } from './content-history.entity';
 import { Repository } from 'typeorm';
-import { ContentCategory } from './content-category.entity';
 
 @Injectable()
 export class ContentHistoryService {
   constructor(
     @InjectRepository(ContentHistory)
     private contentHistoryRepository: Repository<ContentHistory>,
-
-    @InjectRepository(ContentCategory)
-    private contentCategoryRepository: Repository<ContentCategory>,
   ) {}
 
   async findAll(userId: number): Promise<ContentHistory[]> {
@@ -45,14 +41,5 @@ export class ContentHistoryService {
     return await this.contentHistoryRepository.delete(id);
   }
 
-  /**************************************Category table service *************************** */
-  async findAllContent(): Promise<ContentCategory[]> {
-    console.log('inside service');
-    return await this.contentCategoryRepository.find();
-  }
-  async findContentBySlug(slug: string): Promise<ContentCategory[]> {
-    console.log('inside service2');
-    console.log(slug);
-    return await this.contentCategoryRepository.find({ where: { slug: slug } });
-  }
+
 }

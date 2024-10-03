@@ -1,20 +1,21 @@
 import { Controller, Get, Param, Req } from '@nestjs/common';
-import { ContentHistoryService } from './content-history.service';
+import { ContentCategoryService } from './content-category.service';
+
 
 @Controller('category')
 export class ContentCategoryController {
-  constructor(private contentHistoryService: ContentHistoryService) {}
+  constructor(private contentCategoryService: ContentCategoryService) {}
   // @UseGuards(AuthGuard)
   @Get('list')
   getAllContentCategory(): any {
-    return this.contentHistoryService.findAllContent();
+    return this.contentCategoryService.findAllContent();
   }
   @Get(':slug')
   getContentBySlug(@Req() req, @Param('slug') slug: string): any {
     // console.log(req.params);
     // console.log(slug);
-    // const res=await this.contentHistoryService.findContentBySlug(slug);
+    // const res=await this.contentCategoryService.findContentBySlug(slug);
     // if(res.length===0){return }
-    return this.contentHistoryService.findContentBySlug(slug);
+    return this.contentCategoryService.findContentBySlug(slug);
   }
 }
