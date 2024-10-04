@@ -33,13 +33,13 @@ export class ContentHistoryController {
     return this.contentHistoryService.findAll(req?.user?.userId);
   }
 
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Get(':id')
   getContentHistoryById(@Param('id') id: number): any {
     return this.contentHistoryService.findOne(id);
   }
 
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Patch(':id')
   update(
     @Param('id') id: number,

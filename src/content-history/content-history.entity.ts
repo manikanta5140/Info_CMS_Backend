@@ -31,6 +31,12 @@ export class ContentHistory {
 
   @Column()
   slug: string;
+  
+  @Column({ nullable: true })
+  inputLable1Text: string;
+
+  @Column({ nullable: true })
+  inputLable2Text: string;
 
   @CreateDateColumn({
     type: 'timestamp',
