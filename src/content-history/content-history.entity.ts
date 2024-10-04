@@ -1,4 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+  OneToOne,
+} from 'typeorm';
 import { Users } from 'src/users/users.entity';
 import { ContentCategory } from './content-category.entity';
 import { Posts } from 'src/posts/posts.entity';
@@ -8,10 +17,10 @@ export class ContentHistory {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({name:'userId'})
+  @Column({ name: 'userId' })
   userId: number;
 
-  @Column({name:'categoryId'})
+  @Column({ name: 'categoryId' })
   categoryId: number;
 
   @Column('text')
@@ -20,20 +29,33 @@ export class ContentHistory {
   @Column('text')
   content: string;
 
-  @CreateDateColumn({type:'timestamp',default:()=>"CURRENT_TIMESTAMP(6)"})
+  @Column()
+  slug: string;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
   createdOn: Date;
 
-  @UpdateDateColumn({type:'timestamp',default:()=>"CURRENT_TIMESTAMP(6)",onUpdate:"CURRENT_TIMESTAMP(6)"})
-  modifiedOn:Date;
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  modifiedOn: Date;
 
-  @ManyToOne(() => ContentCategory, contentCategory => contentCategory.contentHistory)
-  @JoinColumn([{name:'categoryId',referencedColumnName:'id'}])
+  @ManyToOne(
+    () => ContentCategory,
+    (contentCategory) => contentCategory.contentHistory,
+  )
+  @JoinColumn([{ name: 'categoryId', referencedColumnName: 'id' }])
   contentCategory: ContentCategory;
 
-  @ManyToOne(() => Users, users => users.contentHistory)
-  @JoinColumn([{name:'userId',referencedColumnName:'id'}])
+  @ManyToOne(() => Users, (users) => users.contentHistory)
+  @JoinColumn([{ name: 'userId', referencedColumnName: 'id' }])
   users: Users;
 
-  @OneToOne(() => Posts, posts => posts.contentHistory)
-  posts: Posts; 
+  @OneToOne(() => Posts, (posts) => posts.contentHistory)
+  posts: Posts;
 }

@@ -21,6 +21,12 @@ import { JwtModule } from '@nestjs/jwt';
 import { PostedPlatforms } from './posts/posted-platforms.entity';
 import { CloudinaryProvider } from './cloudinary/cloudinary';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
+import { UserVerifiedPlatform } from './userVerifiedPlatforms/entity/user-verified-platform.entity';
+import { UserSocialMediaCredential } from './social-medias/DTOs/user-social-media-credential.entity';
+import { userVerifiedPlatformsController } from './userVerifiedPlatforms/userVerifiedPlatform.controller';
+import { UserVerifiedPlatformsService } from './userVerifiedPlatforms/userVerifiedPlatform.service';
+import { SocialMediaController } from './social-medias/social-medias.controller';
+import { SocialMediasService } from './social-medias/social-medias.service';
 
 @Module({
   imports: [
@@ -45,6 +51,8 @@ import { CloudinaryService } from './cloudinary/cloudinary.service';
           Platforms,
           Posts,
           PostedPlatforms,
+          UserVerifiedPlatform,
+          UserSocialMediaCredential,
         ],
         synchronize: true,
       }),
@@ -57,6 +65,8 @@ import { CloudinaryService } from './cloudinary/cloudinary.service';
       Platforms,
       Posts,
       UserDetails,
+      UserVerifiedPlatform,
+      UserSocialMediaCredential,
     ]),
 
     // JwtModule Configuration
@@ -76,6 +86,8 @@ import { CloudinaryService } from './cloudinary/cloudinary.service';
     ContentHistoryController,
     PostsController,
     UsersController,
+    userVerifiedPlatformsController,
+    SocialMediaController,
   ],
   providers: [
     AppService,
@@ -85,6 +97,8 @@ import { CloudinaryService } from './cloudinary/cloudinary.service';
     UsersService,
     CloudinaryProvider,
     CloudinaryService,
+    UserVerifiedPlatformsService,
+    SocialMediasService,
   ],
 })
 export class AppModule {}

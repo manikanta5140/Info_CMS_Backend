@@ -52,7 +52,7 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Get('login')
+  @Post('login')
   login(@Body() loginDto: LoginDto) {
     return this.authService.authenticate(loginDto);
   }
