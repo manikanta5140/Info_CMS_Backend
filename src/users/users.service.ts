@@ -22,19 +22,23 @@ export class UsersService {
         return await this.usersRepository.findOne({ where: { email }, relations:{userDetails: true}});
       }
     
-      async findOne(id: number): Promise<Users> {
-        return await this.usersRepository.findOneBy({ id });
+      async findById(id: number): Promise<Users> {
+        return await this.usersRepository.findOne({where: { id }, relations: {userDetails: true}});
       }
     
-      async create(data: any): Promise<Users> {
-        return await this.usersRepository.save(data);
+      async create(userData: any): Promise<any> {
+        const newUser = this.usersRepository.create(userData);
+        return await this.usersRepository.save(newUser);
       }
 
       async createUserDetails(data: any): Promise<UserDetails> {
         return await this.userDetailsRepository.save(data)
       }
     
-      async update(id: number, user: Users): Promise<Users> {
-        return await this.usersRepository.save(user);
+      async update(id: number, updatedUser: Partial<Users>): Promise<any> {
+        console.log(updatedUser)
+        return await this.usersRepository.update(id,updatedUser);
       }
 }
+
+

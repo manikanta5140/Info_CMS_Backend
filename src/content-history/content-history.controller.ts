@@ -18,18 +18,18 @@ import { UpdateContentHistoryDto } from './DTOs/update-content-history.dto';
 export class ContentHistoryController {
   constructor(private contentHistoryService: ContentHistoryService) {}
 
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Post()
   create(@Body() contentHistoryDto: ContentHistoryDto, @Request() req): any {
-    contentHistoryDto.userId = req?.user?.userId;
+    // contentHistoryDto.userId = req?.user?.userId;
     console.log(req.user);
     return this.contentHistoryService.create(contentHistoryDto);
   }
 
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Get()
   getAllContentHistory(@Request() req): any {
-    console.log(req?.user?.userId);
+    // console.log(req?.user?.userId);
     return this.contentHistoryService.findAll(req?.user?.userId);
   }
 
@@ -53,4 +53,10 @@ export class ContentHistoryController {
   delete(@Param('id') id: number): Promise<void> {
     return this.contentHistoryService.delete(id);
   }
+
+  // // @UseGuards(AuthGuard)
+  // @Get('/category/list')
+  // getAllContentCategory(): any {
+  //   return this.contentHistoryService.findAllCategory();
+  // }
 }

@@ -12,7 +12,6 @@ import { AuthController } from './auth/auth.controller';
 import { ContentHistoryController } from './content-history/content-history.controller';
 import { AuthService } from './auth/auth.service';
 import { Users } from './users/users.entity';
-import { ContentCategory } from './content-history/content-category.entity';
 import { Platforms } from './posts/platforms.entity';
 import { Posts } from './posts/posts.entity';
 import { ContentHistory } from './content-history/content-history.entity';
@@ -27,6 +26,10 @@ import { userVerifiedPlatformsController } from './userVerifiedPlatforms/userVer
 import { UserVerifiedPlatformsService } from './userVerifiedPlatforms/userVerifiedPlatform.service';
 import { SocialMediaController } from './social-medias/social-medias.controller';
 import { SocialMediasService } from './social-medias/social-medias.service';
+import { MailService } from './mail/mail.service';
+import { ContentCategory } from './Content-category/content-category.entity';
+import { ContentCategoryController } from './Content-category/content-category.controller';
+import { ContentCategoryService } from './Content-category/content-category.service';
 
 @Module({
   imports: [
@@ -88,6 +91,7 @@ import { SocialMediasService } from './social-medias/social-medias.service';
     UsersController,
     userVerifiedPlatformsController,
     SocialMediaController,
+    ContentCategoryController,
   ],
   providers: [
     AppService,
@@ -99,6 +103,8 @@ import { SocialMediasService } from './social-medias/social-medias.service';
     CloudinaryService,
     UserVerifiedPlatformsService,
     SocialMediasService,
+    MailService,
+    ContentCategoryService,
   ],
 })
 export class AppModule {}
