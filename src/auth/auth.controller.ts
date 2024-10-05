@@ -27,38 +27,47 @@ export class AuthController {
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   async registerUser(@Body() registerDto: RegisterDto) {
-    const { userName, email, password, firstName, lastName } = registerDto;
+    try {
+      const { userName, email, password, firstName, lastName } = registerDto;
 
-    const existingUser = await this.usersService.findByEmail(email);
-    if (existingUser) {
-      throw new BadRequestException('User with this email already exists');
+      const existingUser = await this.usersService.findByEmail(email);
+      if (existingUser) {
+        throw new BadRequestException('User with this email already exists');
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const result = await this.authService.register(
+        userName,
+        email,
+        hashedPassword,
+        firstName,
+        lastName,
+      );
+
+      if (result) {
+        this.authService.sendVerificationMail(result);
+      }
+
+      return this.authService.signIn({
+        userId: result?.id,
+        userName: result?.userName,
+        email: result?.email,
+        isVerified: result?.isVerified,
+      });
+    } catch (error) {
+      console.log('in reg');
+      throw error;
     }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const result = await this.authService.register(
-      userName,
-      email,
-      hashedPassword,
-      firstName,
-      lastName,
-    );
-
-    if (result) {
-      this.authService.sendVerificationMail(result);
-    }
-
-    return this.authService.signIn({
-      userId: result?.id,
-      userName: result?.userName,
-      email: result?.email,
-      isVerified: result?.isVerified,
-    });
   }
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  login(@Body() loginDto: LoginDto) {
-    return this.authService.authenticate(loginDto);
+  async login(@Body() loginDto: LoginDto) {
+    try {
+      return await this.authService.authenticate(loginDto);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Get('verify/:token')
