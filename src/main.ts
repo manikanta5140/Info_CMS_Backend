@@ -13,6 +13,7 @@ async function bootstrap() {
     credentials: true,
     allowedHeaders: 'Content-Type, Accept, Authorization',
   });
+	app.setGlobalPrefix(configService.get('API_VERSION'));
   await app.listen(configService.get('PORT') || 8080);
 }
 bootstrap();

@@ -11,8 +11,13 @@ export class userVerifiedPlatformsController {
   @Get()
   @UseGuards(AuthGuard)
   async userVerifiedPlatforms(@Req() req) {
-    return await this.userVerifiedPlatformsService.userVerifiedPlatforms(
-      req.user.userId,
-    );
+    try{
+      return await this.userVerifiedPlatformsService.userVerifiedPlatforms(
+        req?.user?.userId,
+      );
+    }catch(error){
+      throw error;
+    }
+    
   }
 }

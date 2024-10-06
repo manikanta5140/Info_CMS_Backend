@@ -30,13 +30,8 @@ export class Users {
   @Column()
   password: string;
 
-  // @Column({ default: false })
-  @Column({ nullable: true })
+  @Column({ default: false })
   isVerified: boolean;
-
-  // @Column({ nullable: false })
-  @Column({ nullable: true })
-  verificationCode: string;
 
   @CreateDateColumn({
     type: 'timestamp',

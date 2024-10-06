@@ -30,6 +30,8 @@ import { MailService } from './mail/mail.service';
 import { ContentCategory } from './Content-category/content-category.entity';
 import { ContentCategoryController } from './Content-category/content-category.controller';
 import { ContentCategoryService } from './Content-category/content-category.service';
+import { LoggerService } from './logger/logger.service';
+import { LoggerController } from './logger/logger.controller';
 
 @Module({
   imports: [
@@ -92,6 +94,7 @@ import { ContentCategoryService } from './Content-category/content-category.serv
     userVerifiedPlatformsController,
     SocialMediaController,
     ContentCategoryController,
+    LoggerController,
   ],
   providers: [
     AppService,
@@ -105,6 +108,7 @@ import { ContentCategoryService } from './Content-category/content-category.serv
     SocialMediasService,
     MailService,
     ContentCategoryService,
+    LoggerService,
   ],
 })
 export class AppModule {}

@@ -11,11 +11,16 @@ export class ContentCategoryController {
     return this.contentCategoryService.findAllContent();
   }
   @Get(':slug')
-  getContentBySlug(@Req() req, @Param('slug') slug: string): any {
+  async getContentBySlug(@Req() req, @Param('slug') slug: string): Promise<any> {
     // console.log(req.params);
     // console.log(slug);
     // const res=await this.contentCategoryService.findContentBySlug(slug);
     // if(res.length===0){return }
-    return this.contentCategoryService.findContentBySlug(slug);
+    try{
+      return await this.contentCategoryService.findContentBySlug(slug);
+    }catch(error){
+      throw error;
+    }
+    
   }
 }

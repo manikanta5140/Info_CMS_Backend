@@ -8,7 +8,7 @@ export class UsersController {
 
   @Get()
   @UseGuards(AuthGuard)
-  async getUser(@Request() req) {
+  async getUser(@Request() req): Promise<any> {
     try {
       const userDetail = await this.usersService.findById(req?.user?.userId);
       const { password: _, ...userWithoutPassword } = userDetail;

@@ -13,7 +13,7 @@ export class UserVerifiedPlatformsService {
     @InjectRepository(UserVerifiedPlatform)
     private userVerifiedPlatformRepository: Repository<UserVerifiedPlatform>,
   ) {}
-  async userVerifiedPlatforms(userId: number) {
+  async userVerifiedPlatforms(userId: number): Promise<UserVerifiedPlatform[]> {
     try {
       const verifiedPlatforms = this.userVerifiedPlatformRepository.find({
         where: {
@@ -23,7 +23,7 @@ export class UserVerifiedPlatformsService {
       });
       return verifiedPlatforms;
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw error;
     }
   }
 }

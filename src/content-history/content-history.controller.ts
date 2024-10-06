@@ -13,50 +13,67 @@ import { ContentHistoryDto } from './DTOs/content-history.dto';
 import { ContentHistoryService } from './content-history.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { UpdateContentHistoryDto } from './DTOs/update-content-history.dto';
+import { ContentHistory } from './content-history.entity';
 
 @Controller('content-history')
 export class ContentHistoryController {
   constructor(private contentHistoryService: ContentHistoryService) {}
 
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Post()
-  create(@Body() contentHistoryDto: ContentHistoryDto, @Request() req): any {
-    // contentHistoryDto.userId = req?.user?.userId;
-    console.log(req.user);
-    return this.contentHistoryService.create(contentHistoryDto);
+  async create(@Body() contentHistoryDto: ContentHistoryDto, @Request() req): Promise<ContentHistory> {
+    try{
+      contentHistoryDto.userId = req?.user?.userId;
+      return await this.contentHistoryService.create(contentHistoryDto);
+    }catch(error){
+      throw error;
+    }
   }
 
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Get()
-  getAllContentHistory(@Request() req): any {
-    // console.log(req?.user?.userId);
-    return this.contentHistoryService.findAll(req?.user?.userId);
+  async getAllContentHistory(@Request() req): Promise<ContentHistory[]> {
+    try{
+    return await this.contentHistoryService.findAll(req?.user?.userId);
+    }catch(error){
+      throw error;
+    }
   }
 
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Get(':id')
-  getContentHistoryById(@Param('id') id: number): any {
-    return this.contentHistoryService.findOne(id);
+  async getContentHistoryById(@Param('id') id: number): Promise<ContentHistory> {
+    try{
+      return await this.contentHistoryService.findOne(id);
+    }catch(error){
+      throw error;
+    }
+   
   }
 
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: number,
     @Body() updateContentHistoryDto: UpdateContentHistoryDto,
-  ): any {
-    return this.contentHistoryService.update(id, updateContentHistoryDto);
+  ): Promise<ContentHistory> {
+    try{
+      return await this.contentHistoryService.update(id, updateContentHistoryDto);
+    }catch(error){
+      throw error;
+    }
+    
   }
 
   @UseGuards(AuthGuard)
   @Delete(':id')
-  delete(@Param('id') id: number): Promise<void> {
-    return this.contentHistoryService.delete(id);
+  async delete(@Param('id') id: number): Promise<any> {
+    try{
+      return await this.contentHistoryService.delete(id);
+    }catch(error){
+      throw error;
+    }
+    
   }
 
-  // // @UseGuards(AuthGuard)
-  // @Get('/category/list')
-  // getAllContentCategory(): any {
-  //   return this.contentHistoryService.findAllCategory();
-  // }
 }

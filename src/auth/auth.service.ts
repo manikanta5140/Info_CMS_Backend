@@ -24,6 +24,7 @@ export class AuthService {
     try {
       const user = await this.validateUser(data);
       if (!user) {
+        console.log("in auth", user);
         throw new UnauthorizedException();
       }
       return this.signIn(user);
@@ -39,7 +40,7 @@ export class AuthService {
         throw new NotFoundException('User not found!!');
       }
       // if(!user.isVerified){
-      //   throw new BadRequestException('Please verify to Login !!');
+      //   throw new BadRequestException('Please verify to Login!!');
       // }
       const isPasswordValid = await bcrypt.compare(
         data.password,
@@ -54,7 +55,7 @@ export class AuthService {
           isVerified: user?.isVerified,
         };
       }
-      return null;
+      throw new UnauthorizedException("Incorrect password !!");
     } catch (error) {
       throw error;
     }

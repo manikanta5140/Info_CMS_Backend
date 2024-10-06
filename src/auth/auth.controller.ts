@@ -8,6 +8,7 @@ import {
   HttpCode,
   Param,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { RegisterDto } from 'src/auth/DTOs/register.dto';
 import { UsersService } from 'src/users/users.service';
@@ -15,6 +16,8 @@ import * as bcrypt from 'bcrypt';
 import { AuthService } from './auth.service';
 import { LoginDto } from './DTOs/login.dto';
 import { JwtService } from '@nestjs/jwt';
+import { LoggerService } from 'src/logger/logger.service';
+import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -22,6 +25,7 @@ export class AuthController {
     private authService: AuthService,
     private usersService: UsersService,
     private jwtService: JwtService,
+    private readonly logger: LoggerService
   ) {}
 
   @Post('register')
@@ -55,7 +59,6 @@ export class AuthController {
         isVerified: result?.isVerified,
       });
     } catch (error) {
-      console.log('in reg');
       throw error;
     }
   }
@@ -66,11 +69,13 @@ export class AuthController {
     try {
       return await this.authService.authenticate(loginDto);
     } catch (error) {
+      this.logger.log(error);
+      console.log(" in log con", error);
       throw error;
     }
   }
 
-  @Get('verify/:token')
+  @Get('verify-email/:token')
   async verifyUser(@Param('token') token: string) {
     try {
       const tokenPayload = await this.jwtService.verifyAsync(token);
@@ -95,10 +100,28 @@ export class AuthController {
         message: 'User verified successfully.',
       };
     } catch (error) {
+      throw error;
+    }
+  }
+
+  @Get('isvalid-user/:token')
+  async isValidUser(@Param('token') token: string) {
+    try {
+      const tokenPayload = await this.jwtService.verifyAsync(token);
+
+      if (!tokenPayload || !tokenPayload.sub) {
+        throw new BadRequestException('Invalid token !!');
+      }
+      const user = await this.usersService.findById(tokenPayload.sub);
+      if (!user?.isVerified) {
+          throw new BadRequestException("User is not verified !!")
+      }
       return {
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: 'An error occurred while verifying the user.',
+        status: HttpStatus.OK,
+        message: 'Valid User!!',
       };
+    } catch (error) {
+      throw error;
     }
   }
 }
