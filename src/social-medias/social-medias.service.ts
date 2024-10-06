@@ -70,6 +70,7 @@ export class SocialMediasService {
       where: { userId, platformId },
     });
     const codeVerifier = verification_code;
+
     const redirectUri = new URL(process.env.REDIRECT_URI);
     redirectUri.searchParams.append('userId', userId.toString());
     redirectUri.searchParams.append('platformId', platformId.toString());
@@ -88,12 +89,16 @@ export class SocialMediasService {
         existingCredential.access_token = accessToken;
         existingCredential.refresh_token = refreshToken;
         await this.userSocialMediaCredential.save(existingCredential);
-        const userVerification =
-          await this.userVerifiedPlatformRepository.findOne({
-            where: { userId, platformId },
-          });
-        userVerification.isVerified = true;
-        await this.userVerifiedPlatformRepository.save(userVerification);
+        // const userVerification =
+        //   await this.userVerifiedPlatformRepository.findOne({
+        //     where: { userId, platformId },
+        //   });
+        // userVerification.isVerified = true;
+        await this.userVerifiedPlatformRepository.save({
+          userId,
+          platformId,
+          isVerified: true,
+        });
       }
     } catch (error) {
       console.error('Error details:', error);
@@ -120,7 +125,7 @@ export class SocialMediasService {
       return response;
     } catch (error) {
       console.log(error);
-      throw new Error(`Failed to post tweet: ${error.message}`);
+      throw new Error(`Failed to post tweet: ${error}`);
     }
   }
   async deleteTweet(tweetId: string): Promise<any> {

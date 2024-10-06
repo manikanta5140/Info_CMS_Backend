@@ -24,7 +24,8 @@ export class SocialMediaController {
       await this.socialMediasService.getTwitterAuthorizationUrl(
         req.user.userId,
       );
-    res.redirect(redirectUrl);
+    console.log(redirectUrl, 'anup');
+    return res.json({ redirectUrl });
   }
 
   @Get('twitter/callback')
@@ -51,6 +52,8 @@ export class SocialMediaController {
   @Post('twitter/tweet')
   @UseGuards(AuthGuard)
   async postTwitterTweet(@Body('message') message: string, @Req() req) {
+    console.log(message);
+    console.log(req);
     return this.socialMediasService.postTwitterTweetOnBehalfOfUser(
       message,
       req.user.userId,

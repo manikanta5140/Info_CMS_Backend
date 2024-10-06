@@ -32,12 +32,9 @@ export class ContentHistoryController {
 
   @UseGuards(AuthGuard)
   @Get()
-  async getAllContentHistory(@Request() req): Promise<ContentHistory[]> {
-    try{
-    return await this.contentHistoryService.findAll(req?.user?.userId);
-    }catch(error){
-      throw error;
-    }
+  getAllContentHistory(@Request() req): any {
+    console.log(req?.user?.userId);
+    return this.contentHistoryService.findAll(req?.user?.userId);
   }
 
   @UseGuards(AuthGuard)

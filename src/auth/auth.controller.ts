@@ -7,7 +7,7 @@ import {
   Post,
   HttpCode,
   Param,
-  NotFoundException
+  NotFoundException,
 } from '@nestjs/common';
 import { RegisterDto } from 'src/auth/DTOs/register.dto';
 import { UsersService } from 'src/users/users.service';
@@ -17,6 +17,7 @@ import { LoginDto } from './DTOs/login.dto';
 import { JwtService } from '@nestjs/jwt';
 // import { LoggerService } from 'src/logger/logger.service';
 
+import { throwError } from 'rxjs';
 
 @Controller('auth')
 export class AuthController {
@@ -103,26 +104,4 @@ export class AuthController {
       throw error;
     }
   }
-
-  @Get('isvalid-user/:token')
-  async isValidUser(@Param('token') token: string) {
-    try {
-      const tokenPayload = await this.jwtService.verifyAsync(token);
-
-      if (!tokenPayload || !tokenPayload.sub) {
-        throw new BadRequestException('Invalid token !!');
-      }
-      const user = await this.usersService.findById(tokenPayload.sub);
-      if (!user?.isVerified) {
-          throw new BadRequestException("User is not verified !!")
-      }
-      return {
-        status: HttpStatus.OK,
-        message: 'Valid User!!',
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
 }
-
