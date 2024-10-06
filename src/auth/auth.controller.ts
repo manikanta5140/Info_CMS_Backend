@@ -7,8 +7,7 @@ import {
   Post,
   HttpCode,
   Param,
-  NotFoundException,
-  UnauthorizedException,
+  NotFoundException
 } from '@nestjs/common';
 import { RegisterDto } from 'src/auth/DTOs/register.dto';
 import { UsersService } from 'src/users/users.service';
@@ -16,8 +15,8 @@ import * as bcrypt from 'bcrypt';
 import { AuthService } from './auth.service';
 import { LoginDto } from './DTOs/login.dto';
 import { JwtService } from '@nestjs/jwt';
-import { LoggerService } from 'src/logger/logger.service';
-import { AuthGuard } from './auth.guard';
+// import { LoggerService } from 'src/logger/logger.service';
+
 
 @Controller('auth')
 export class AuthController {
@@ -25,7 +24,7 @@ export class AuthController {
     private authService: AuthService,
     private usersService: UsersService,
     private jwtService: JwtService,
-    private readonly logger: LoggerService
+    // private readonly logger: LoggerService
   ) {}
 
   @Post('register')
@@ -71,8 +70,7 @@ export class AuthController {
     try {
       return await this.authService.authenticate(loginDto);
     } catch (error) {
-      this.logger.log(error);
-      console.log(" in log con", error);
+      // this.logger.log(error);
       throw error;
     }
   }
@@ -127,3 +125,4 @@ export class AuthController {
     }
   }
 }
+

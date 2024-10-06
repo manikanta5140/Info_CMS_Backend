@@ -30,8 +30,7 @@ import { MailService } from './mail/mail.service';
 import { ContentCategory } from './Content-category/content-category.entity';
 import { ContentCategoryController } from './Content-category/content-category.controller';
 import { ContentCategoryService } from './Content-category/content-category.service';
-import { LoggerService } from './logger/logger.service';
-import { LoggerController } from './logger/logger.controller';
+// import { LoggerService } from './logger/logger.service';
 
 @Module({
   imports: [
@@ -93,8 +92,7 @@ import { LoggerController } from './logger/logger.controller';
     UsersController,
     userVerifiedPlatformsController,
     SocialMediaController,
-    ContentCategoryController,
-    LoggerController,
+    ContentCategoryController
   ],
   providers: [
     AppService,
@@ -108,7 +106,7 @@ import { LoggerController } from './logger/logger.controller';
     SocialMediasService,
     MailService,
     ContentCategoryService,
-    LoggerService,
+    // LoggerService
   ],
 })
 export class AppModule {}
