@@ -51,12 +51,15 @@ export class SocialMediaController {
 
   @Post('twitter/tweet')
   @UseGuards(AuthGuard)
-  async postTwitterTweet(@Body('message') message: string, @Req() req) {
-    console.log(message);
-    console.log(req);
+  async postTwitterTweet(
+    @Body('message') message: string,
+    @Req() req,
+    @Body('contentHistoryId') contentHistoryId: number,
+  ) {
     return this.socialMediasService.postTwitterTweetOnBehalfOfUser(
       message,
       req.user.userId,
+      contentHistoryId,
     );
   }
 }

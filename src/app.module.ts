@@ -71,6 +71,7 @@ import { ContentCategoryService } from './Content-category/content-category.serv
       UserDetails,
       UserVerifiedPlatform,
       UserSocialMediaCredential,
+      PostedPlatforms,
     ]),
 
     // JwtModule Configuration
@@ -92,7 +93,7 @@ import { ContentCategoryService } from './Content-category/content-category.serv
     UsersController,
     userVerifiedPlatformsController,
     SocialMediaController,
-    ContentCategoryController
+    ContentCategoryController,
   ],
   providers: [
     AppService,

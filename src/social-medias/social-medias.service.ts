@@ -6,12 +6,17 @@ import { Repository } from 'typeorm';
 import { Platforms } from 'src/posts/platforms.entity';
 import { access } from 'fs';
 import { UserVerifiedPlatform } from 'src/userVerifiedPlatforms/entity/user-verified-platform.entity';
+import { Posts } from 'src/posts/posts.entity';
+import { PostsService } from 'src/posts/posts.service';
+import { PostedPlatforms } from 'src/posts/posted-platforms.entity';
 
 @Injectable()
 export class SocialMediasService {
   private client: TwitterApi;
 
   constructor(
+    private readonly postsService: PostsService,
+
     @InjectRepository(UserSocialMediaCredential)
     private userSocialMediaCredential: Repository<UserSocialMediaCredential>,
 
@@ -20,6 +25,9 @@ export class SocialMediasService {
 
     @InjectRepository(UserVerifiedPlatform)
     private userVerifiedPlatformRepository: Repository<UserVerifiedPlatform>,
+
+    @InjectRepository(Posts)
+    private postRepository: Repository<Posts>,
   ) {
     this.client = new TwitterApi({
       clientId: process.env.TWITTER_CLIENT_ID,
@@ -109,6 +117,7 @@ export class SocialMediasService {
   async postTwitterTweetOnBehalfOfUser(
     tweet: string,
     userId: number,
+    contentHistoryId: number,
   ): Promise<any> {
     try {
       const { id } = await this.platformRepository.findOne({
@@ -122,12 +131,27 @@ export class SocialMediasService {
       });
       const userClient = new TwitterApi(access_token);
       const response = await userClient.v2.tweet(tweet);
+      let post = await this.postsService.findPostByUserIdAndContentHistoryId(
+        userId,
+        contentHistoryId,
+      );
+
+      if (!post) {
+        post = await this.postsService.createPost({
+          userId,
+          contentHistoryId,
+        });
+      }
+
+      await this.postsService.createPostOnPostedPaltform(userId,id,post.id)
+
       return response;
     } catch (error) {
       console.log(error);
       throw new Error(`Failed to post tweet: ${error}`);
     }
   }
+
   async deleteTweet(tweetId: string): Promise<any> {
     try {
       const response = await this.client.v2.deleteTweet(tweetId);

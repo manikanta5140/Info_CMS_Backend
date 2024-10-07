@@ -28,12 +28,12 @@ export class PostsController {
     try {
       const post = await this.postsService.createPost(postData, postImage);
       if (post) {
-        return { status: 'success' };
+        return { status: 'success', post };
       } else {
         throw new BadRequestException();
       }
     } catch (error) {
-      return { status: 'Failed', message: error.message };
+      throw new BadRequestException(error.message);
     }
   }
 

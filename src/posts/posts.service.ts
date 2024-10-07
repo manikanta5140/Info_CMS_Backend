@@ -5,6 +5,7 @@ import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { Posts } from './posts.entity';
 import { Repository } from 'typeorm';
 import { createPostDto } from './DTOs/createPost.dto';
+import { PostedPlatforms } from './posted-platforms.entity';
 
 @Injectable()
 export class PostsService {
@@ -12,9 +13,12 @@ export class PostsService {
     private readonly cloudinaryService: CloudinaryService,
     @InjectRepository(Posts)
     private readonly postRepository: Repository<Posts>,
+
+    @InjectRepository(PostedPlatforms)
+    private postedPlatformRepository: Repository<PostedPlatforms>,
   ) {}
 
-  async createPost(postData: createPostDto, postImage: Express.Multer.File) {
+  async createPost(postData: createPostDto, postImage?: Express.Multer.File) {
     let cloudinaryResponse: UploadApiResponse | UploadApiErrorResponse;
     let post: createPostDto = postData;
     try {
@@ -68,5 +72,29 @@ export class PostsService {
       lastPage,
       total,
     };
+  }
+
+  async findPostByUserIdAndContentHistoryId(
+    userId: number,
+    contentHistoryId: number,
+  ) {
+    return await this.postRepository.findOne({
+      where: {
+        userId,
+        contentHistoryId,
+      },
+    });
+  }
+
+  async createPostOnPostedPaltform(
+    userId: number,
+    platformId: number,
+    postId: number,
+  ) {
+    return await this.postedPlatformRepository.save({
+      userId,
+      platformId,
+      postId,
+    });
   }
 }
