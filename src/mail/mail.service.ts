@@ -23,7 +23,7 @@ export class MailService {
       from: 'youremail@gmail.com',
       to: to,
       subject: 'Account created successfully !!',
-      text: `click on the below link to verify !!!  link:http://localhost:8080/auth/verify/${token}`,
+      text: `click on the below link to verify !!!  link:http://localhost:8080/api/v1/auth/verify-email/${token}`,
     };
 
     try {

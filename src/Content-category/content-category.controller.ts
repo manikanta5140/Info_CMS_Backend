@@ -14,10 +14,6 @@ export class ContentCategoryController {
   @UseGuards(AuthGuard)
   @Get(':slug')
   async getContentBySlug(@Req() req, @Param('slug') slug: string): Promise<any> {
-    // console.log(req.params);
-    // console.log(slug);
-    // const res=await this.contentCategoryService.findContentBySlug(slug);
-    // if(res.length===0){return }
     try{
       return await this.contentCategoryService.findContentBySlug(slug);
     }catch(error){

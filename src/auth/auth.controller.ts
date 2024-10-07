@@ -49,6 +49,7 @@ export class AuthController {
       );
 
       if (result) {
+        console.log(result, 'res');
         this.authService.sendVerificationMail(result);
       }
 
@@ -104,4 +105,27 @@ export class AuthController {
       throw error;
     }
   }
+
+  @Get('isVerified-user/:token')
+  async isVerifiedUser(@Param('token') token: string) {
+    try {
+      const tokenPayload = await this.jwtService.verifyAsync(token);
+
+      if (!tokenPayload || !tokenPayload.sub) {
+        throw new BadRequestException('Invalid token!');
+      }
+      const user = await this.usersService.findById(tokenPayload.sub);
+      if (!user.isVerified) {
+        throw new BadRequestException('User is not verified!');
+      }
+
+      return {
+        status: HttpStatus.OK,
+        message: 'User verified successfully.',
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
 }
+
