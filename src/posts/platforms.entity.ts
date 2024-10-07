@@ -18,6 +18,8 @@ import { UserSocialMediaCredential } from '../social-medias/DTOs/user-social-med
 export class Platforms {
   @PrimaryGeneratedColumn()
   id: number;
+  @Column()
+  platformImage: string;
 
   @Column()
   platformName: string;

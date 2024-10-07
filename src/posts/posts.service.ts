@@ -40,37 +40,13 @@ export class PostsService {
     }
   }
 
-  async getPosts(
-    page: number = 1,
-    limit: number = 10,
-    userId: number,
-  ): Promise<any> {
+  async getPosts(userId: number): Promise<any> {
     const [results, total] = await this.postRepository.findAndCount({
       where: { userId },
-      skip: (page - 1) * limit,
-      take: limit,
     });
-    const lastPage = Math.ceil(total / limit);
-
-    if (lastPage == 0) {
-      return {
-        status: 'Failed',
-        message: `No posts found.`,
-      };
-    }
-
-    if (page > lastPage) {
-      return {
-        status: 'Failed',
-        message: `No more data beyond page ${lastPage} with limit ${limit}.`,
-      };
-    }
 
     return {
       data: results,
-      currentPage: page,
-      lastPage,
-      total,
     };
   }
 

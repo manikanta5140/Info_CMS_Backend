@@ -40,10 +40,8 @@ export class PostsController {
   @UseGuards(AuthGuard)
   @Get()
   async getAllPosts(
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
     @Req() request,
-  ): Promise<{ data: any; total: number; page: number; lastPage: number }> {
-    return this.postsService.getPosts(page, limit, request.user.userid);
+  ): Promise<any> {
+    return this.postsService.getPosts( request.user.userid);
   }
 }
