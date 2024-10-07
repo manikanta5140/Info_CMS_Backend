@@ -9,6 +9,8 @@ import {
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  Post,
+  HttpCode,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -51,5 +53,11 @@ export class UsersController {
     } catch (err) {
       throw new InternalServerErrorException();
     }
+  }
+
+  @Post('unique-user')
+  @HttpCode(200)
+  async isUniqueUserName(@Body('userName') username: string) {
+    return this.usersService.isUniqueUserName(username);
   }
 }

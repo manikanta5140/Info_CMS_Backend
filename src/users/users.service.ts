@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Users } from './users.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -66,5 +66,19 @@ export class UsersService {
       };
     }
     return await this.userDetailsRepository.update({ userId: id }, updatedUser);
+  }
+
+  async isUniqueUserName(userName: string) {
+    try {
+      const user = await this.usersRepository.findOne({ where: { userName } });
+      if (!user) {
+        return { isUnique: true };
+      } else {
+        return { isUnique: false };
+      }
+    } catch (error) {
+      console.error(error.message);
+      throw new InternalServerErrorException();
+    }
   }
 }
