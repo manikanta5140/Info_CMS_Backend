@@ -27,9 +27,14 @@ export class UsersController {
   async getUser(@Request() req): Promise<any> {
     try {
       const userDetail = await this.usersService.findById(req?.user?.userId);
-      const { password: _, ...userWithoutPassword } = userDetail;
-      console.log(userDetail);
-      return userWithoutPassword;
+      const { password: _, userDetails, ...userWithoutDetails } = userDetail;
+
+      const combinedUserDetails = {
+        ...userWithoutDetails,
+        ...userDetails,
+      };
+      console.log(combinedUserDetails);
+      return combinedUserDetails;
     } catch (error) {
       return { status: 'Failed', message: error.message };
     }
