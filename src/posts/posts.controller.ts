@@ -39,9 +39,7 @@ export class PostsController {
 
   @UseGuards(AuthGuard)
   @Get()
-  async getAllPosts(
-    @Req() request,
-  ): Promise<any> {
-    return this.postsService.getPosts( request.user.userid);
+  async getAllPosts(@Req() request): Promise<any> {
+    return this.postsService.getPosts(request.user.userid);
   }
 }

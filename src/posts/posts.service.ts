@@ -40,12 +40,31 @@ export class PostsService {
   }
 
   async getPosts(userId: number): Promise<any> {
-    const [results, total] = await this.postRepository.findAndCount({
+    const results = await this.postedPlatformRepository.find({
       where: { userId },
+      relations: ['posts', 'posts.contentHistory', 'platforms'],
     });
 
+    const groupedPosts = results.reduce((acc, current) => {
+      const postId = current.postId;
+
+      // If the postId doesn't exist in the accumulator, create a new entry
+      if (!acc[postId]) {
+        acc[postId] = {
+          id: postId,
+          userId: current.userId,
+          platforms: [],
+          posts: current.posts,
+        };
+      }
+
+      acc[postId].platforms.push(current.platforms);
+
+      return acc;
+    }, {});
+
     return {
-      data: results,
+      data: Object.values(groupedPosts), // Convert the grouped object back to an array
     };
   }
 

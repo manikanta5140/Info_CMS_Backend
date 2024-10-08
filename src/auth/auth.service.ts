@@ -10,7 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { Users } from 'src/users/entities/users.entity';
 import { UsersService } from 'src/users/users.service';
 import { LoginDto } from './DTOs/login.dto';
-import { MailService } from 'src/mail/mail.service';
+// import { MailService } from 'src/mail/mail.service';
 import { MailDto } from 'src/mail/DTOs/mail.dto';
 
 @Injectable()
@@ -18,14 +18,14 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    private mailService: MailService,
+    // private mailService: MailService,
   ) {}
 
   async authenticate(data: LoginDto): Promise<any> {
     try {
       const user = await this.validateUser(data);
       if (!user) {
-        console.log("in auth", user);
+        console.log('in auth', user);
         throw new UnauthorizedException();
       }
       return this.signIn(user);
@@ -56,7 +56,7 @@ export class AuthService {
           isVerified: user?.isVerified,
         };
       }
-      throw new UnauthorizedException("Incorrect password !!");
+      throw new UnauthorizedException('Incorrect password !!');
     } catch (error) {
       throw error;
     }
@@ -88,7 +88,7 @@ export class AuthService {
     return user;
   }
 
-  async sendVerificationMail(user : Users) {
+  async sendVerificationMail(user: Users) {
     try {
       const data = await this.signIn({ userId: user.id });
       const mailDto: MailDto = {
@@ -97,10 +97,8 @@ export class AuthService {
         template: 'verify',
         link: `http://localhost:8080/api/v1/auth/verify-email/${data.accessToken}`,
       };
-      const response = await this.mailService.sendMail(
-       mailDto
-      );
-      console.log(response);
+      // const response = await this.mailService.sendMail(mailDto);
+      // console.log(response);
     } catch (error) {
       return { status: 'Failed', message: error.message };
     }
