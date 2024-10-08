@@ -2,7 +2,10 @@ import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class MailDto {
   @IsNotEmpty()
-  receiverMail: string;
+  from: string;
+
+  @IsNotEmpty()
+  to: string;
 
   @IsNotEmpty()
   subject: string;
@@ -10,9 +13,5 @@ export class MailDto {
   @IsNotEmpty()
   template: string;
 
-  @IsOptional()
-  token?: string;
-
-  @IsOptional()
-  link?: string;
+  context: object;
 }

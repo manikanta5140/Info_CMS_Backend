@@ -5,9 +5,12 @@ import {
   Get,
   HttpStatus,
   Post,
+  Request,
   HttpCode,
   Param,
   NotFoundException,
+  Res,
+  UseGuards,
 } from '@nestjs/common';
 import { RegisterDto } from 'src/auth/DTOs/register.dto';
 import { UsersService } from 'src/users/users.service';
@@ -18,6 +21,8 @@ import { JwtService } from '@nestjs/jwt';
 // import { LoggerService } from 'src/logger/logger.service';
 
 import { throwError } from 'rxjs';
+import { join } from 'path';
+import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -26,7 +31,7 @@ export class AuthController {
     private usersService: UsersService,
     private jwtService: JwtService,
     // private readonly logger: LoggerService
-  ) {}
+  ) { }
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
@@ -48,10 +53,9 @@ export class AuthController {
         lastName,
       );
 
-      // if (result) {
-      //   console.log(result, 'res');
-      //   this.authService.sendVerificationMail(result);
-      // }
+      if (result) {
+        this.authService.sendVerificationMail(result);
+      }
 
       return this.authService.signIn({
         userId: result?.id,
@@ -78,7 +82,7 @@ export class AuthController {
   }
 
   @Get('verify-email/:token')
-  async verifyUser(@Param('token') token: string) {
+  async verifyUser(@Param('token') token: string, @Res() res) {
     try {
       const tokenPayload = await this.jwtService.verifyAsync(token);
 
@@ -90,42 +94,33 @@ export class AuthController {
         throw new NotFoundException('User not found!');
       }
       if (user.isVerified) {
-        return {
-          status: HttpStatus.OK,
-          message: 'User is already verified.',
-        };
+        return res.sendFile(join(__dirname, '..', '..', 'public', 'alreadyVerified.html'));
+
       }
       user.isVerified = true;
       await this.usersService.update(tokenPayload.sub, { isVerified: true });
-      return {
-        status: HttpStatus.OK,
-        message: 'User verified successfully.',
-      };
+      return res.sendFile(join(__dirname, '..', '..', 'public', 'verified.html'));
+
     } catch (error) {
-      throw error;
+      return res.sendFile(join(__dirname, '..', '..', 'public', 'failed.html'));
     }
   }
 
-  @Get('isVerified-user/:token')
-  async isVerifiedUser(@Param('token') token: string) {
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard)
+  @Post('resend-email')
+  async resentMail(@Request() req){
     try {
-      const tokenPayload = await this.jwtService.verifyAsync(token);
-
-      if (!tokenPayload || !tokenPayload.sub) {
-        throw new BadRequestException('Invalid token!');
+      const user = await this.usersService.findById(req?.user?.userId);
+      if (!user) {
+        throw new NotFoundException('User not found!');
       }
-      const user = await this.usersService.findById(tokenPayload.sub);
-      if (!user.isVerified) {
-        throw new BadRequestException('User is not verified!');
+      this.authService.sendVerificationMail(user);
+      return{
+        message: 'resended succesfully !!'
       }
-
-      return {
-        status: HttpStatus.OK,
-        message: 'User verified successfully.',
-      };
     } catch (error) {
       throw error;
     }
   }
 }
-

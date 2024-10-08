@@ -34,74 +34,118 @@
 //     }
 //   }
 // }
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import * as nodemailer from 'nodemailer';
-import { join } from 'path';
-import { MailDto } from './DTOs/mail.dto';
-import * as exphbs from 'express-handlebars'; // Import express-handlebars
 
-@Injectable()
-export class MailService {
-  private transporter: nodemailer.Transporter;
 
-  constructor(private configService: ConfigService) {
-    this.initializeTransporter();
-  }
+// import { Injectable } from '@nestjs/common';
+// import { ConfigService } from '@nestjs/config';
+// import * as nodemailer from 'nodemailer';
+// import { join } from 'path';
+// import { MailDto } from './DTOs/mail.dto';
+// import * as exphbs from 'express-handlebars'; // Import express-handlebars
 
-  private async initializeTransporter() {
-    this.transporter = nodemailer.createTransport({
-      host: this.configService.get<string>('MAIL_HOST'),
-      port: this.configService.get<number>('MAIL_PORT'),
-      auth: {
-        user: this.configService.get<string>('MAIL_USER'),
-        pass: this.configService.get<string>('MAIL_PASS'),
-      },
-    });
+// @Injectable()
+// export class MailService {
+//   private transporter: nodemailer.Transporter;
 
-    // Dynamically import nodemailer-express-handlebars
-    const hbs = (await import('nodemailer-express-handlebars')).default;
+//   constructor(private configService: ConfigService) {
+//     this.initializeTransporter();
+//   }
 
-    // Instantiate express-handlebars
-    const viewEngine = exphbs.create({
-      extname: '.handlebars',
-      partialsDir: join(__dirname, '../public/'),
-      defaultLayout: false,
-    });
+//   private async initializeTransporter() {
+//     this.transporter = nodemailer.createTransport({
+//       host: this.configService.get<string>('MAIL_HOST'),
+//       port: this.configService.get<number>('MAIL_PORT'),
+//       auth: {
+//         user: this.configService.get<string>('MAIL_USER'),
+//         pass: this.configService.get<string>('MAIL_PASS'),
+//       },
+//     });
 
-    const handlebarOptions = {
-      viewEngine, // Use the instance of express-handlebars
-      viewPath: join(__dirname, '../public/'),
-      extName: '.handlebars',
-    };
+//     // Dynamically import nodemailer-express-handlebars
+//     const hbs = (await import('nodemailer-express-handlebars')).default;
 
-    this.transporter.use('compile', hbs(handlebarOptions));
-  }
+//     // Instantiate express-handlebars
+//     const viewEngine = exphbs.create({
+//       extname: '.handlebars',
+//       partialsDir: join(__dirname, '../public/'),
+//       defaultLayout: false,
+//     });
 
-  // async sendMail(to: string, token: string): Promise<void> {
-  //   console.log('in sendmail', to, token);
-  //   const mailOptions = {
-  //     from: 'youremail@gmail.com',
-  //     to: to,
-  //     subject: 'Account created successfully !!',
-  //     text: `click on the below link to verify !!!  link:http://localhost:8080/auth/verify-email/${token}`,
-  async sendMail(mailDto: MailDto): Promise<void> {
-    const mailOptions = {
-      from: 'youremail@gmail.com',
-      to: mailDto.receiverMail,
-      subject: mailDto.subject,
-      template: mailDto.template,
-      context: {
-        data: mailDto,
-      },
-    };
+//     const handlebarOptions = {
+//       viewEngine, // Use the instance of express-handlebars
+//       viewPath: join(__dirname, '../public/'),
+//       extName: '.handlebars',
+//     };
 
-    try {
-      await this.transporter.sendMail(mailOptions);
-      console.log('Mail sent successfully!');
-    } catch (error) {
-      console.error('Error sending mail:', error.message);
-      throw new Error('Failed to send mail !!');
-    }
-  }
-}
+//     this.transporter.use('compile', hbs(handlebarOptions));
+//   }
+
+//   // async sendMail(to: string, token: string): Promise<void> {
+//   //   console.log('in sendmail', to, token);
+//   //   const mailOptions = {
+//   //     from: 'youremail@gmail.com',
+//   //     to: to,
+//   //     subject: 'Account created successfully !!',
+//   //     text: `click on the below link to verify !!!  link:http://localhost:8080/auth/verify-email/${token}`,
+//   async sendMail(mailDto: MailDto): Promise<void> {
+//     const mailOptions = {
+//       from: 'youremail@gmail.com',
+//       to: mailDto.receiverMail,
+//       subject: mailDto.subject,
+//       template: mailDto.template,
+//       context: {
+//         data: mailDto,
+//       },
+//     };
+
+//     try {
+//       await this.transporter.sendMail(mailOptions);
+//       console.log('Mail sent successfully!');
+//     } catch (error) {
+//       console.error('Error sending mail:', error.message);
+//       throw new Error('Failed to send mail !!');
+//     }
+//   }
+// }
+
+
+// import { Injectable } from '@nestjs/common';
+// import { ConfigService } from '@nestjs/config';
+// import * as nodemailer from 'nodemailer';
+// import { join } from 'path';
+// import { HandlebarsAdapter} from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+// import { MailDto } from './DTOs/mail.dto';
+
+// @Injectable()
+// export class MailService {
+//     private transporter: nodemailer.Transporter
+  
+//   constructor(private configService: ConfigService) {
+//     this.transporter = nodemailer.createTransport({
+//       host: this.configService.get<string>('MAIL_HOST'),
+//       port: this.configService.get<number>('MAIL_PORT'),
+//       auth: {
+//         user: this.configService.get<string>('MAIL_USER'),
+//         pass: this.configService.get<string>('MAIL_PASS'),
+//       },
+
+//       template:{
+//         dir: join(__dirname,'templates'),
+//         adapter: new HandlebarsAdapter()
+//       }
+//     });
+//   }
+
+  
+
+//   async sendMail(mailDto: MailDto): Promise<void> {
+        
+//         try {
+//           await this.transporter.sendMail(mailDto);
+//           console.log('Mail sent successfully!');
+//         } catch (error) {
+//           console.error('Error sending mail:', error.message);
+//           throw new Error('Failed to send mail !!');
+//         }
+//   }
+// }

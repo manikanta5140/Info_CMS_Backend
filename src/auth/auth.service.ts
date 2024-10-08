@@ -10,7 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { Users } from 'src/users/entities/users.entity';
 import { UsersService } from 'src/users/users.service';
 import { LoginDto } from './DTOs/login.dto';
-import { MailService } from 'src/mail/mail.service';
+import { MailerService } from '@nestjs-modules/mailer';
 import { MailDto } from 'src/mail/DTOs/mail.dto';
 
 @Injectable()
@@ -18,8 +18,8 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    private mailService: MailService,
-  ) {}
+    private mailService: MailerService
+  ) { }
 
   async authenticate(data: LoginDto): Promise<any> {
     try {
@@ -40,9 +40,9 @@ export class AuthService {
       if (!user) {
         throw new NotFoundException('User not found!!');
       }
-      // if(!user.isVerified){
-      //   throw new BadRequestException('Please verify to Login!!');
-      // }
+      if (!user.isVerified) {
+        throw new BadRequestException('Please verify to Login!!');
+      }
       const isPasswordValid = await bcrypt.compare(
         data.password,
         user?.password,
@@ -88,21 +88,26 @@ export class AuthService {
     return user;
   }
 
-  async sendVerificationMail(user : Users) {
+  async sendVerificationMail(user: Users) {
     try {
       const data = await this.signIn({ userId: user.id });
+
       const mailDto: MailDto = {
-        receiverMail: user.email,
+        from: "mani@gmail.com",
+        to: user.email,
         subject: 'Your account has been created',
         template: 'verify',
-        link: `http://localhost:8080/api/v1/auth/verify-email/${data.accessToken}`,
+        context: {
+          link: `http://localhost:8080/auth/verify-email/${data.accessToken}`,
+        },
       };
-      const response = await this.mailService.sendMail(
-       mailDto
-      );
-      console.log(response);
+
+      const response = await this.mailService.sendMail(mailDto);
+      console.log('Mail response:', response);
     } catch (error) {
-      return { status: 'Failed', message: error.message };
+      console.error('Error sending verification email:', error);
+
     }
   }
+
 }

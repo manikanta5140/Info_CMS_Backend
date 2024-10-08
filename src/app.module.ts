@@ -26,10 +26,12 @@ import { userVerifiedPlatformsController } from './userVerifiedPlatforms/userVer
 import { UserVerifiedPlatformsService } from './userVerifiedPlatforms/userVerifiedPlatform.service';
 import { SocialMediaController } from './social-medias/social-medias.controller';
 import { SocialMediasService } from './social-medias/social-medias.service';
-import { MailService } from './mail/mail.service';
+import { HandlebarsAdapter} from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { ContentCategory } from './Content-category/entities/content-category.entity';
 import { ContentCategoryController } from './Content-category/content-category.controller';
 import { ContentCategoryService } from './Content-category/content-category.service';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { join } from 'path';
 // import { LoggerService } from './logger/logger.service';
 
 @Module({
@@ -84,6 +86,31 @@ import { ContentCategoryService } from './Content-category/content-category.serv
         signOptions: { expiresIn: configService.get<string>('JWT_EXPIRY') },
       }),
     }),
+
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        transport: {
+          host: configService.get<string>('MAIL_HOST'),
+          port: configService.get<number>('MAIL_PORT'),
+          auth: {
+            user: configService.get<string>('MAIL_USER'),
+            pass: configService.get<string>('MAIL_PASS'),
+          },
+        },
+        defaults: {
+          from: `"No Reply" <${configService.get<string>('MAIL_FROM')}>`,
+        },
+        template: {
+          dir: join(__dirname, 'mail/templates'),
+          adapter: new HandlebarsAdapter(),
+          options: {
+            strict: true,
+          },
+        },
+      }),
+    }),
   ],
   controllers: [
     AppController,
@@ -105,7 +132,6 @@ import { ContentCategoryService } from './Content-category/content-category.serv
     CloudinaryService,
     UserVerifiedPlatformsService,
     SocialMediasService,
-    // MailService,
     ContentCategoryService,
     // LoggerService
   ],
