@@ -65,7 +65,8 @@ export class UsersService {
         profilePhoto: cloudinaryResponse.secure_url,
       };
     }
-    return await this.userDetailsRepository.update({ userId: id }, updatedUser);
+    await this.userDetailsRepository.update({ userId: id }, updatedUser);
+    return await this.userDetailsRepository.findOne({ where: { userId: id } });
   }
 
   async isUniqueUserName(userName: string) {

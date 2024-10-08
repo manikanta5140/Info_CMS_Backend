@@ -17,6 +17,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { Users } from './entities/users.entity';
 import { UserDetails } from './entities/user-details.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { error } from 'console';
 
 @Controller('user')
 export class UsersController {
@@ -46,15 +47,15 @@ export class UsersController {
   async updateUser(
     @Req() req,
     @Body() updateUserDetails: Partial<UserDetails>,
-    @UploadedFile() profileImage: Express.Multer.File,
+    @UploadedFile() profilePhoto: Express.Multer.File,
   ) {
     try {
-      await this.usersService.updateUserDetails(
+      const result = await this.usersService.updateUserDetails(
         req.user.userId,
         updateUserDetails,
-        profileImage,
+        profilePhoto,
       );
-      return { status: 'success', message: 'user updated successfully' };
+      return result;
     } catch (err) {
       throw new InternalServerErrorException();
     }
