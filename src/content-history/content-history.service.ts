@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ContentHistory } from './content-history.entity';
+import { ContentHistory } from './entities/content-history.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()

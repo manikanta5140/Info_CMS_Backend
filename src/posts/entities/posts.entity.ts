@@ -9,8 +9,8 @@ import {
   OneToMany,
   OneToOne,
 } from 'typeorm';
-import { Users } from 'src/users/users.entity';
-import { ContentHistory } from 'src/content-history/content-history.entity';
+import { Users } from 'src/users/entities/users.entity';
+import { ContentHistory } from 'src/content-history/entities/content-history.entity';
 import { Platforms } from './platforms.entity';
 import { PostedPlatforms } from './posted-platforms.entity';
 

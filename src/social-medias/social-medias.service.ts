@@ -3,13 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TwitterApi } from 'twitter-api-v2';
 import { UserSocialMediaCredential } from './DTOs/user-social-media-credential.entity';
 import { Repository } from 'typeorm';
-import { Platforms } from 'src/posts/platforms.entity';
+import { Platforms } from 'src/posts/entities/platforms.entity';
 import { access } from 'fs';
 import { UserVerifiedPlatform } from 'src/userVerifiedPlatforms/entity/user-verified-platform.entity';
-import { Posts } from 'src/posts/posts.entity';
+import { Posts } from 'src/posts/entities/posts.entity';
 import { PostsService } from 'src/posts/posts.service';
-import { PostedPlatforms } from 'src/posts/posted-platforms.entity';
-
+import { PostedPlatforms } from 'src/posts/entities/posted-platforms.entity';
 @Injectable()
 export class SocialMediasService {
   private client: TwitterApi;

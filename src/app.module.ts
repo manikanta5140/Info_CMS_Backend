@@ -11,13 +11,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthController } from './auth/auth.controller';
 import { ContentHistoryController } from './content-history/content-history.controller';
 import { AuthService } from './auth/auth.service';
-import { Users } from './users/users.entity';
-import { Platforms } from './posts/platforms.entity';
-import { Posts } from './posts/posts.entity';
-import { ContentHistory } from './content-history/content-history.entity';
-import { UserDetails } from './users/user-details.entity';
+import { Users } from './users/entities/users.entity';
+import { Platforms } from './posts/entities/platforms.entity';
+import { Posts } from './posts/entities/posts.entity';
+import { ContentHistory } from './content-history/entities/content-history.entity';
+import { UserDetails } from './users/entities/user-details.entity';
 import { JwtModule } from '@nestjs/jwt';
-import { PostedPlatforms } from './posts/posted-platforms.entity';
+import { PostedPlatforms } from './posts/entities/posted-platforms.entity';
 import { CloudinaryProvider } from './cloudinary/cloudinary';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { UserVerifiedPlatform } from './userVerifiedPlatforms/entity/user-verified-platform.entity';
@@ -27,7 +27,7 @@ import { UserVerifiedPlatformsService } from './userVerifiedPlatforms/userVerifi
 import { SocialMediaController } from './social-medias/social-medias.controller';
 import { SocialMediasService } from './social-medias/social-medias.service';
 import { MailService } from './mail/mail.service';
-import { ContentCategory } from './Content-category/content-category.entity';
+import { ContentCategory } from './Content-category/entities/content-category.entity';
 import { ContentCategoryController } from './Content-category/content-category.controller';
 import { ContentCategoryService } from './Content-category/content-category.service';
 // import { LoggerService } from './logger/logger.service';
@@ -105,7 +105,7 @@ import { ContentCategoryService } from './Content-category/content-category.serv
     CloudinaryService,
     UserVerifiedPlatformsService,
     SocialMediasService,
-    MailService,
+    // MailService,
     ContentCategoryService,
     // LoggerService
   ],

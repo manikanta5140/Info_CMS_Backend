@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { Posts } from './posts.entity';
 import { Platforms } from './platforms.entity';
-import { Users } from 'src/users/users.entity';
+import { Users } from 'src/users/entities/users.entity';
 
 @Entity('posted_platforms')
 export class PostedPlatforms {

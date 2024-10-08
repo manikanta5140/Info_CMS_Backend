@@ -9,9 +9,9 @@ import {
   OneToMany,
 } from 'typeorm';
 import { UserDetails } from './user-details.entity';
-import { ContentHistory } from 'src/content-history/content-history.entity';
-import { Posts } from 'src/posts/posts.entity';
-import { PostedPlatforms } from 'src/posts/posted-platforms.entity';
+import { ContentHistory } from 'src/content-history/entities/content-history.entity';
+import { Posts } from 'src/posts/entities/posts.entity';
+import { PostedPlatforms } from 'src/posts/entities/posted-platforms.entity';
 import { UserVerifiedPlatform } from 'src/userVerifiedPlatforms/entity/user-verified-platform.entity';
 import { UserSocialMediaCredential } from 'src/social-medias/DTOs/user-social-media-credential.entity';
 

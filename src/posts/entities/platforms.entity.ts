@@ -10,8 +10,8 @@ import {
 } from 'typeorm';
 import { Posts } from './posts.entity';
 import { PostedPlatforms } from './posted-platforms.entity';
-import { UserVerifiedPlatform } from '../userVerifiedPlatforms/entity/user-verified-platform.entity';
-import { UserSocialMediaCredential } from '../social-medias/DTOs/user-social-media-credential.entity';
+import { UserVerifiedPlatform } from '../../userVerifiedPlatforms/entity/user-verified-platform.entity';
+import { UserSocialMediaCredential } from '../../social-medias/DTOs/user-social-media-credential.entity';
 
 @Entity('platforms')
 @Unique(['platformName'])

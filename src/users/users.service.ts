@@ -1,8 +1,8 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { Users } from './users.entity';
+import { Users } from './entities/users.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserDetails } from './user-details.entity';
+import { UserDetails } from './entities/user-details.entity';
 import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 

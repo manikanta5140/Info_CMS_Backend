@@ -1,4 +1,4 @@
-  import { ContentHistory } from 'src/content-history/content-history.entity';
+  import { ContentHistory } from 'src/content-history/entities/content-history.entity';
 import { Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 
   @Entity('content_category')

@@ -1,4 +1,4 @@
-import { Users } from 'src/users/users.entity';
+import { Users } from 'src/users/entities/users.entity';
 import {
   Column,
   CreateDateColumn,
@@ -10,7 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Platforms } from '../../posts/platforms.entity';
+import { Platforms } from '../../posts/entities/platforms.entity';
 
 @Entity('user_verified_platform')
 export class UserVerifiedPlatform {

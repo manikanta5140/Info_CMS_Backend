@@ -48,10 +48,10 @@ export class AuthController {
         lastName,
       );
 
-      if (result) {
-        console.log(result, 'res');
-        this.authService.sendVerificationMail(result);
-      }
+      // if (result) {
+      //   console.log(result, 'res');
+      //   this.authService.sendVerificationMail(result);
+      // }
 
       return this.authService.signIn({
         userId: result?.id,

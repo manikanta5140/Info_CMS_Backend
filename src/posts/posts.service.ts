@@ -2,11 +2,10 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
-import { Posts } from './posts.entity';
+import { Posts } from './entities/posts.entity';
 import { Repository } from 'typeorm';
 import { createPostDto } from './DTOs/createPost.dto';
-import { PostedPlatforms } from './posted-platforms.entity';
-
+import { PostedPlatforms } from './entities/posted-platforms.entity';
 @Injectable()
 export class PostsService {
   constructor(

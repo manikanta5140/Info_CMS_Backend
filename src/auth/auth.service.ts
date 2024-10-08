@@ -7,10 +7,11 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { Users } from 'src/users/users.entity';
+import { Users } from 'src/users/entities/users.entity';
 import { UsersService } from 'src/users/users.service';
 import { LoginDto } from './DTOs/login.dto';
 import { MailService } from 'src/mail/mail.service';
+import { MailDto } from 'src/mail/DTOs/mail.dto';
 
 @Injectable()
 export class AuthService {
@@ -87,13 +88,17 @@ export class AuthService {
     return user;
   }
 
-  async sendVerificationMail(userDetails) {
+  async sendVerificationMail(user : Users) {
     try {
-      console.log(userDetails);
-      const data = await this.signIn({ userId: userDetails.id });
+      const data = await this.signIn({ userId: user.id });
+      const mailDto: MailDto = {
+        receiverMail: user.email,
+        subject: 'Your account has been created',
+        template: 'verify',
+        link: `http://localhost:8080/api/v1/auth/verify-email/${data.accessToken}`,
+      };
       const response = await this.mailService.sendMail(
-        userDetails.email,
-        data.accessToken,
+       mailDto
       );
       console.log(response);
     } catch (error) {
