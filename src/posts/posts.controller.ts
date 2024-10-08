@@ -42,4 +42,9 @@ export class PostsController {
   async getAllPosts(@Req() request): Promise<any> {
     return this.postsService.getPosts(request.user.userid);
   }
+
+  @Get('all-platforms')
+  async getAllPlatforms() {
+    return this.postsService.getAllPlatform();
+  }
 }
