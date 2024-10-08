@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
@@ -6,6 +10,7 @@ import { Posts } from './entities/posts.entity';
 import { Repository } from 'typeorm';
 import { createPostDto } from './DTOs/createPost.dto';
 import { PostedPlatforms } from './entities/posted-platforms.entity';
+import { Platforms } from './entities/platforms.entity';
 @Injectable()
 export class PostsService {
   constructor(
@@ -15,6 +20,9 @@ export class PostsService {
 
     @InjectRepository(PostedPlatforms)
     private postedPlatformRepository: Repository<PostedPlatforms>,
+
+    @InjectRepository(Platforms)
+    private platformRepository: Repository<Platforms>,
   ) {}
 
   async createPost(postData: createPostDto, postImage?: Express.Multer.File) {
@@ -40,12 +48,31 @@ export class PostsService {
   }
 
   async getPosts(userId: number): Promise<any> {
-    const [results, total] = await this.postRepository.findAndCount({
+    const results = await this.postedPlatformRepository.find({
       where: { userId },
+      relations: ['posts', 'posts.contentHistory', 'platforms'],
     });
 
+    const groupedPosts = results.reduce((acc, current) => {
+      const postId = current.postId;
+
+      // If the postId doesn't exist in the accumulator, create a new entry
+      if (!acc[postId]) {
+        acc[postId] = {
+          id: postId,
+          userId: current.userId,
+          platforms: [],
+          posts: current.posts,
+        };
+      }
+
+      acc[postId].platforms.push(current.platforms);
+
+      return acc;
+    }, {});
+
     return {
-      data: results,
+      data: Object.values(groupedPosts), // Convert the grouped object back to an array
     };
   }
 
@@ -71,5 +98,15 @@ export class PostsService {
       platformId,
       postId,
     });
+  }
+
+  async getAllPlatform() {
+    try {
+      const result = await this.platformRepository.find();
+      return {data:result}
+    } catch (err) {
+      console.error(err);
+      throw new InternalServerErrorException();
+    }
   }
 }

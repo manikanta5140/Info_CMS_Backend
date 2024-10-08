@@ -4,7 +4,6 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Users } from 'src/users/entities/users.entity';
@@ -25,7 +24,7 @@ export class AuthService {
     try {
       const user = await this.validateUser(data);
       if (!user) {
-        console.log("in auth", user);
+        console.log('in auth', user);
         throw new UnauthorizedException();
       }
       return this.signIn(user);
@@ -56,7 +55,7 @@ export class AuthService {
           isVerified: user?.isVerified,
         };
       }
-      throw new UnauthorizedException("Incorrect password !!");
+      throw new UnauthorizedException('Incorrect password !!');
     } catch (error) {
       throw error;
     }
