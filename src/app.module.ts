@@ -32,10 +32,12 @@ import { ContentCategoryController } from './Content-category/content-category.c
 import { ContentCategoryService } from './Content-category/content-category.service';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { join } from 'path';
+import { HttpModule } from '@nestjs/axios';
 // import { LoggerService } from './logger/logger.service';
 
 @Module({
   imports: [
+    HttpModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -132,7 +134,7 @@ import { join } from 'path';
     CloudinaryService,
     UserVerifiedPlatformsService,
     SocialMediasService,
-    ContentCategoryService,
+    ContentCategoryService
     // LoggerService
   ],
 })

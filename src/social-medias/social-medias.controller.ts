@@ -12,10 +12,16 @@ import { SocialMediasService } from './social-medias.service';
 import { Response } from 'express';
 import { AuthGuard } from '../auth/auth.guard';
 import { join } from 'path';
+import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('sm')
 export class SocialMediaController {
-  constructor(private readonly socialMediasService: SocialMediasService) {}
+  constructor(
+    private readonly socialMediasService: SocialMediasService,
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Get('twitter/authorize')
   @UseGuards(AuthGuard)
@@ -70,4 +76,21 @@ export class SocialMediaController {
   // ) {
   //   return this.socialMediasService.sendWhatsAppMessage(to, message);
   // }
+  @Post('facebook')
+  async postFacebookPost(@Body() body) {
+    const pageId = '450747084788489'; // Page ID
+    const accessToken = this.configService.get<string>('FACEBOOK_ACCESS_TOKEN'); // Get access token from config/env
+    const url = `https://graph.facebook.com/v21.0/${pageId}/feed`;
+
+    try {
+      const response = await this.httpService
+        .post(url, { message: body.message }, { params: { access_token: accessToken } })
+        .toPromise(); // Convert Observable to Promise
+      console.log(response.data);
+      return { success: true, message: 'Post published successfully!' };
+    } catch (error) {
+      console.error('Error posting to Facebook:', error.message);
+      return { success: false, message: 'Failed to publish post.' };
+    }
+  }  
 }
