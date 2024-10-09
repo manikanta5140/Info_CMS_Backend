@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { ContentHistoryDto } from './DTOs/content-history.dto';
 import { ContentHistoryService } from './content-history.service';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 import { UpdateContentHistoryDto } from './DTOs/update-content-history.dto';
 import { ContentHistory } from './entities/content-history.entity';
 

@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
 import { get } from 'http';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 import { UserVerifiedPlatformsService } from './userVerifiedPlatform.service';
 
 @Controller('verifiedPlatforms')

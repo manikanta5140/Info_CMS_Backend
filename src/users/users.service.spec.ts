@@ -5,11 +5,6 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserDetails } from './entities/user-details.entity';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
-import { ContentHistory } from '../content-history/entities/content-history.entity';
-import { Posts } from '../posts/entities/posts.entity';
-import { PostedPlatforms } from '../posts/entities/posted-platforms.entity';
-import { UserVerifiedPlatform } from '../userVerifiedPlatforms/entity/user-verified-platform.entity';
-import { UserSocialMediaCredential } from '../social-medias/DTOs/user-social-media-credential.entity';
 
 describe('UsersService', () => {
   let userService: UsersService;
@@ -23,12 +18,12 @@ describe('UsersService', () => {
     profilePhoto: 'http://example.com/photo.jpg',
     firstName: 'John',
     lastName: 'Doe',
-    gender: 'Male', // Assuming you want to add gender
-    dateOfBirth: new Date('2012-12-12'), // Correctly use a Date object
-    mobileNumber: '1234567890', // Adding mobileNumber as well
-    createdOn: new Date(), // Mock the created date
-    modifiedOn: new Date(), // Mock the modified date
-    users: {} as Users, // This should be populated with a mock Users object if needed
+    gender: 'Male', 
+    dateOfBirth: new Date('2012-12-12'), 
+    mobileNumber: '1234567890', 
+    createdOn: new Date(), 
+    modifiedOn: new Date(), 
+    users: {} as Users
   };
   
 
@@ -40,24 +35,27 @@ describe('UsersService', () => {
     isVerified: true,
     createdOn: new Date('2023-01-01T10:00:00Z'),
     modifiedOn: new Date('2023-01-05T15:00:00Z'),
-    userDetails: mockUserDetails, // Use valid UserDetails object
-    contentHistory: [], // Assuming it's an array
-    posts: [], // Assuming it's an array
-    postedPlatforms: [], // Assuming it's an array
-    verifiedPlatforms: [], // Assuming it's an array
-    socialMediaCredentials: [], // Assuming it's an array
+    userDetails: mockUserDetails,
+    contentHistory: [],
+    posts: [],
+    postedPlatforms: [],
+    verifiedPlatforms: [], 
+    socialMediaCredentials: [],
   };
 
+  const mockUserArray: Users[] = [mockUser];
+
   const mockUsersRepository = {
-    findOne: jest.fn(), // Correct method for single user
+    findOne: jest.fn(), 
+    find: jest.fn(),
   };
 
   const mockUserDetailsRepository = {
-    // Add mock methods as needed
+    
   };
 
   const mockCloudinaryService = {
-    upload: jest.fn(), // Cloudinary methods
+    upload: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -76,27 +74,7 @@ describe('UsersService', () => {
         {
           provide: CloudinaryService,
           useValue: mockCloudinaryService,
-        },
-        {
-          provide: getRepositoryToken(ContentHistory),
-          useValue: mockUsersRepository,
-        },
-        {
-          provide: getRepositoryToken(Posts),
-          useValue: mockUsersRepository,
-        },
-        {
-          provide: getRepositoryToken(PostedPlatforms),
-          useValue: mockUsersRepository,
-        },
-        {
-          provide: getRepositoryToken(UserVerifiedPlatform),
-          useValue: mockUsersRepository,
-        },
-        {
-          provide: getRepositoryToken(UserSocialMediaCredential),
-          useValue: mockUsersRepository,
-        },
+        }
       ],
     }).compile();
 
@@ -110,14 +88,38 @@ describe('UsersService', () => {
 
   describe('findById', () => {
     it('should return a user by ID with relations', async () => {
-      jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser); // Mock findOne
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser); 
 
-      const result = await userService.findById(mockUser.id); // Call method
+      const result = await userService.findById(mockUser.id); 
       expect(userRepository.findOne).toHaveBeenCalledWith({
         where: { id: mockUser.id },
-        relations: { userDetails: true }, // Expect correct relations
+        relations: { userDetails: true },
       });
-      expect(result).toEqual(mockUser); // Expect correct result
+      expect(result).toEqual(mockUser);                                         
     });
+  });
+
+  describe('findAll', () => {
+    it('should return all users', async () => {
+      jest.spyOn(userRepository, 'find').mockResolvedValue(mockUserArray);
+
+      const result = await userService.findAll();
+      expect(userRepository.find).toHaveBeenCalled;
+      expect(result).toEqual(mockUserArray);
+    })
+  });
+
+  describe('findByEmail', () => {
+    it('should return a user by email with relations', async () => {
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser); 
+
+      const result = await userService.findByEmail(mockUser.email); 
+      expect(userRepository.findOne).toHaveBeenCalledWith({
+        where: { email: mockUser.email },
+        relations: { userDetails: true },
+      });
+      expect(result).toEqual(mockUser);                                         
+    });
+
   });
 });

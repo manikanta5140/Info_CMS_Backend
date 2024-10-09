@@ -13,8 +13,8 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PostsService } from './posts.service';
-import { AuthGuard } from 'src/auth/auth.guard';
-import { request } from 'http';
+import { AuthGuard } from '../auth/auth.guard';
+
 
 @Controller('posts')
 export class PostsController {

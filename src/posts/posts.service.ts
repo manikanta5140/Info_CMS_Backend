@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { Posts } from './entities/posts.entity';
 import { Repository } from 'typeorm';
 import { createPostDto } from './DTOs/createPost.dto';

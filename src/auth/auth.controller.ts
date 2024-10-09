@@ -12,8 +12,8 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { RegisterDto } from 'src/auth/DTOs/register.dto';
-import { UsersService } from 'src/users/users.service';
+import { RegisterDto } from '../auth/DTOs/register.dto';
+import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { AuthService } from './auth.service';
 import { LoginDto } from './DTOs/login.dto';

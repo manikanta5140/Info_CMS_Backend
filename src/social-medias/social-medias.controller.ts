@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { SocialMediasService } from './social-medias.service';
 import { Response } from 'express';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 import { join } from 'path';
 
 @Controller('sm')

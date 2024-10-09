@@ -6,11 +6,11 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { Users } from 'src/users/entities/users.entity';
-import { UsersService } from 'src/users/users.service';
+import { Users } from '../users/entities/users.entity';
+import { UsersService } from '../users/users.service';
 import { LoginDto } from './DTOs/login.dto';
 import { MailerService } from '@nestjs-modules/mailer';
-import { MailDto } from 'src/mail/DTOs/mail.dto';
+import { MailDto } from '../mail/DTOs/mail.dto';
 
 @Injectable()
 export class AuthService {

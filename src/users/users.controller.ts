@@ -13,7 +13,7 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 import { Users } from './entities/users.entity';
 import { UserDetails } from './entities/user-details.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
