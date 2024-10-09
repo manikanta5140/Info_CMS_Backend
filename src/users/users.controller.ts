@@ -66,4 +66,16 @@ export class UsersController {
   async isUniqueUserName(@Body('userName') username: string) {
     return this.usersService.isUniqueUserName(username);
   }
+
+  @Post('send-whatsapp-verification-token')
+  @UseGuards(AuthGuard)
+  async verifyUserPhoneNumber(
+    @Req() req,
+    @Body('mobileNumber') mobileNumber: string,
+  ) {
+    return await this.usersService.verifyUserPhoneNumber(
+      mobileNumber,
+      req.user.userId,
+    );
+  }
 }

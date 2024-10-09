@@ -7,10 +7,12 @@ import { Platforms } from '../posts/entities/platforms.entity';
 import { UserVerifiedPlatform } from '../userVerifiedPlatforms/entity/user-verified-platform.entity';
 import { Posts } from '../posts/entities/posts.entity';
 import { PostsService } from '../posts/posts.service';
+import * as Twilio from 'twilio';
 
 @Injectable()
 export class SocialMediasService {
   private client: TwitterApi;
+  private twilioClient: Twilio.Twilio;
 
   constructor(
     private readonly postsService: PostsService,
@@ -31,6 +33,11 @@ export class SocialMediasService {
       clientId: process.env.TWITTER_CLIENT_ID,
       clientSecret: process.env.TWITTER_CLIENT_SECRET,
     });
+
+    this.twilioClient = Twilio(
+      process.env.TWILIO_ACCOUNT_SID,
+      process.env.TWILIO_AUTH_TOKEN,
+    );
   }
 
   async getTwitterAuthorizationUrl(userId: number) {
@@ -141,7 +148,7 @@ export class SocialMediasService {
         });
       }
 
-      await this.postsService.createPostOnPostedPaltform(userId,id,post.id)
+      await this.postsService.createPostOnPostedPaltform(userId, id, post.id);
 
       return response;
     } catch (error) {
@@ -156,6 +163,20 @@ export class SocialMediasService {
       return response;
     } catch (error) {
       throw new Error(`Failed to delete tweet: ${error.message}`);
+    }
+  }
+
+  async sendWhatsAppMessage(to: string, message: string) {
+    try {
+      const response = await this.twilioClient.messages.create({
+        body: message,
+        from: 'whatsapp:+14155238886',
+        to: `whatsapp:${`+91` + to}`,
+      });
+      console.log(response);
+      return response;
+    } catch (error) {
+      throw new Error(`Failed to send WhatsApp message: ${error.message}`);
     }
   }
 }

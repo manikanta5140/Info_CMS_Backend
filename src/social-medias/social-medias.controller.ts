@@ -62,4 +62,12 @@ export class SocialMediaController {
       contentHistoryId,
     );
   }
+
+  // @Post('send-whatsapp-message')
+  // async sendWhatsAppMessage(
+  //   @Body('to') to: string,
+  //   @Body('message') message: string,
+  // ) {
+  //   return this.socialMediasService.sendWhatsAppMessage(to, message);
+  // }
 }

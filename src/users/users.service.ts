@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserDetails } from './entities/user-details.entity';
 import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { SocialMediasService } from 'src/social-medias/social-medias.service';
 
 @Injectable()
 export class UsersService {
@@ -16,6 +17,8 @@ export class UsersService {
 
     @InjectRepository(UserDetails)
     private userDetailsRepository: Repository<UserDetails>,
+
+    private readonly socialMediasService: SocialMediasService,
   ) {}
 
   async findAll(): Promise<Users[]> {
@@ -81,5 +84,24 @@ export class UsersService {
       console.error(error.message);
       throw new InternalServerErrorException();
     }
+  }
+
+  async verifyUserPhoneNumber(mobileNumber: string, userId: number) {
+    try {
+      let OTP = this.randomSixDigitCode();
+      const message = `Your verification code is ${OTP}. Please enter this code in the app to verify your account.`;
+      this.socialMediasService.sendWhatsAppMessage(mobileNumber, message);
+      await this.userDetailsRepository.update(
+        { userId },
+        { mobileNumberVerificationCode: OTP },
+      );
+      return { status: 'success' };
+    } catch (err) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  randomSixDigitCode() {
+    return Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
   }
 }

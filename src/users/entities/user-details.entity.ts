@@ -40,6 +40,9 @@ export class UserDetails {
   @Column({ nullable: true })
   mobileNumber: string;
 
+  @Column({ nullable: true })
+  mobileNumberVerificationCode: number;
+
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
