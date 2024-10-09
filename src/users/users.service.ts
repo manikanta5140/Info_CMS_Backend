@@ -4,7 +4,7 @@ import { Users } from './entities/users.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserDetails } from './entities/user-details.entity';
 import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
 export class UsersService {

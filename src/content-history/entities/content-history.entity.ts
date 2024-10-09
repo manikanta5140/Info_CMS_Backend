@@ -8,10 +8,10 @@ import {
   JoinColumn,
   OneToOne,
 } from 'typeorm';
-import { Users } from 'src/users/entities/users.entity';
+import { Users } from '../../users/entities/users.entity';
 
-import { Posts } from 'src/posts/entities/posts.entity';
-import { ContentCategory } from 'src/Content-category/entities/content-category.entity';
+import { Posts } from '../../posts/entities/posts.entity';
+import { ContentCategory } from '../../Content-category/entities/content-category.entity';
 @Entity('content_history')
 export class ContentHistory {
   @PrimaryGeneratedColumn()
