@@ -77,14 +77,23 @@ export class AuthService {
     password: string,
     firstName: string,
     lastName: string,
+    profilePhoto?: string,
+    email_verified?: boolean,
   ): Promise<Users> {
-    const user = await this.usersService.create({ userName, email, password });
+    const user = await this.usersService.create({
+      userName,
+      email,
+      password,
+    });
+    await this.usersService.update(user.id, { isVerified: email_verified });
     await this.usersService.createUserDetails({
       userId: user.id,
       firstName,
       lastName,
+      profilePhoto,
     });
-    return user;
+    const userRes = this.usersService.findById(user.id);
+    return userRes;
   }
 
   async sendVerificationMail(user: Users) {

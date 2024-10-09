@@ -27,7 +27,10 @@ export class UsersController {
   @UseGuards(AuthGuard)
   async getUser(@Request() req): Promise<any> {
     try {
+      console.log(req?.user?.userId);
       const userDetail = await this.usersService.findById(req?.user?.userId);
+
+      console.log(userDetail);
       const { password: _, userDetails, ...userWithoutDetails } = userDetail;
 
       const combinedUserDetails = {
@@ -37,6 +40,7 @@ export class UsersController {
       console.log(combinedUserDetails);
       return combinedUserDetails;
     } catch (error) {
+      console.log(error.message);
       return { status: 'Failed', message: error.message };
     }
   }
