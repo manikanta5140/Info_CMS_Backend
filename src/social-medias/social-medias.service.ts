@@ -166,15 +166,23 @@ export class SocialMediasService {
     }
   }
 
-  async sendWhatsAppMessage(to: string, message: string) {
+  async sendWhatsAppMessage(
+    to: string,
+    contentSid: string,
+    contentVariables?: Record<string, string | number>,
+  ) {
     try {
-      const response = await this.twilioClient.messages.create({
-        body: message,
+      const messagePayload: any = {
         from: 'whatsapp:+14155238886',
-        to: `whatsapp:${`+91` + to}`,
-      });
-      console.log(response);
-      return response;
+        to: `whatsapp:+91${to}`,
+        contentSid,
+      };
+
+      if (contentVariables) {
+        messagePayload.contentVariables = JSON.stringify(contentVariables);
+      }
+      console.log(await this.twilioClient.messages.create(messagePayload));
+      return;
     } catch (error) {
       throw new Error(`Failed to send WhatsApp message: ${error.message}`);
     }
@@ -200,8 +208,6 @@ export class SocialMediasService {
     }
   }
 
-
-
   async faceBookPost(
     message: string,
     userId: number,
@@ -211,12 +217,13 @@ export class SocialMediasService {
       const { id } = await this.platformRepository.findOne({
         where: { platformName: 'Facebook' },
       });
-      const { verification_code, access_token } = await this.userSocialMediaCredential.findOne({
-        where: {
-          userId,
-          platformId: id,
-        },
-      });
+      const { verification_code, access_token } =
+        await this.userSocialMediaCredential.findOne({
+          where: {
+            userId,
+            platformId: id,
+          },
+        });
       let post = await this.postsService.findPostByUserIdAndContentHistoryId(
         userId,
         contentHistoryId,
@@ -229,9 +236,11 @@ export class SocialMediasService {
         });
       }
 
-      return await this.postsService.createPostOnPostedPaltform(userId, id, post.id);
-
-      
+      return await this.postsService.createPostOnPostedPaltform(
+        userId,
+        id,
+        post.id,
+      );
     } catch (error) {
       console.log(error);
       throw new Error(`Failed to post tweet: ${error}`);
