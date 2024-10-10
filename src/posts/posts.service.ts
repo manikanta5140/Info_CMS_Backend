@@ -48,6 +48,7 @@ export class PostsService {
   }
 
   async getPosts(userId: number): Promise<any> {
+    console.log(userId,"user")
     const results = await this.postedPlatformRepository.find({
       where: { userId },
       relations: ['posts', 'posts.contentHistory', 'platforms'],

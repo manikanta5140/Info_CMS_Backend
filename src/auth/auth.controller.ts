@@ -123,4 +123,24 @@ export class AuthController {
       throw error;
     }
   }
+
+  @Get('isvalid-user/:token')
+  async isValidUser(@Param('token') token: string) {
+    try {
+      const tokenPayload = await this.jwtService.verifyAsync(token);
+      if (!tokenPayload || !tokenPayload.sub) {
+        throw new BadRequestException('Invalid token !!');
+      }
+      const user = await this.usersService.findById(tokenPayload.sub);
+      if (!user?.isVerified) {
+          throw new BadRequestException("User is not verified !!")
+      }
+      return {
+        status: HttpStatus.OK,
+        message: 'Valid User!!',
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
 }

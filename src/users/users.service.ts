@@ -58,6 +58,7 @@ export class UsersService {
     updatedUser: Partial<UserDetails>,
     profilePhoto?: Express.Multer.File,
   ) {
+    console.log(id,updatedUser,profilePhoto)
     if (profilePhoto) {
       let cloudinaryResponse: UploadApiResponse | UploadApiErrorResponse;
       cloudinaryResponse =

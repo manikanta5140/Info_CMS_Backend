@@ -40,7 +40,7 @@ export class PostsController {
   @UseGuards(AuthGuard)
   @Get()
   async getAllPosts(@Req() request): Promise<any> {
-    return this.postsService.getPosts(request.user.userid);
+    return this.postsService.getPosts(request.user.userId);
   }
 
   @Get('all-platforms')
