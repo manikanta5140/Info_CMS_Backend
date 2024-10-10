@@ -84,7 +84,11 @@ export class SocialMediaController {
 
     try {
       const response = await this.httpService
-        .post(url, { message: body.message }, { params: { access_token: accessToken } })
+        .post(
+          url,
+          { message: body.message },
+          { params: { access_token: accessToken } },
+        )
         .toPromise(); // Convert Observable to Promise
       console.log(response.data);
       return { success: true, message: 'Post published successfully!' };
@@ -92,5 +96,5 @@ export class SocialMediaController {
       console.error('Error posting to Facebook:', error.message);
       return { success: false, message: 'Failed to publish post.' };
     }
-  }  
+  }
 }

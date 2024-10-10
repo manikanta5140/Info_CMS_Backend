@@ -33,6 +33,9 @@ export class Users {
   @Column({ default: false })
   isVerified: boolean;
 
+  @Column({ default: false })
+  isMobileVerified: boolean;
+
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',

@@ -89,8 +89,8 @@ export class UsersService {
   async verifyUserPhoneNumber(mobileNumber: string, userId: number) {
     try {
       let OTP = this.randomSixDigitCode();
-      const message = `Your verification code is ${OTP}. Please enter this code in the app to verify your account.`;
-      this.socialMediasService.sendWhatsAppMessage(mobileNumber, message);
+      const message = `your account verification code  ${OTP}`;
+      await this.socialMediasService.sendWhatsAppMessage(mobileNumber, message);
       await this.userDetailsRepository.update(
         { userId },
         { mobileNumberVerificationCode: OTP },
