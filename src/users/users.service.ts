@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserDetails } from './entities/user-details.entity';
 import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
-import { SocialMediasService } from 'src/social-medias/social-medias.service';
+import { SocialMediasService } from '../social-medias/social-medias.service';
 
 @Injectable()
 export class UsersService {

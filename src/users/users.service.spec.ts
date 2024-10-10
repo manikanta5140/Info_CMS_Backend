@@ -5,12 +5,16 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserDetails } from './entities/user-details.entity';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { SocialMediasService } from '../social-medias/social-medias.service';
+import { PostsService } from 'src/posts/posts.service';
 
 describe('UsersService', () => {
   let userService: UsersService;
   let userRepository: Repository<Users>;
   let userDetailsRepository: Repository<UserDetails>;
   let cloudinaryService: CloudinaryService;
+  let socialMediasService: SocialMediasService;
+  let postsService: PostsService;
 
   const mockUserDetails: UserDetails = {
     id: 1,
@@ -21,6 +25,7 @@ describe('UsersService', () => {
     gender: 'Male', 
     dateOfBirth: new Date('2012-12-12'), 
     mobileNumber: '1234567890', 
+    mobileNumberVerificationCode: 873242,
     createdOn: new Date(), 
     modifiedOn: new Date(), 
     users: {} as Users
@@ -33,6 +38,7 @@ describe('UsersService', () => {
     email: 'john.doe@example.com',
     password: 'hashed_password',
     isVerified: true,
+    isMobileVerified: true,
     createdOn: new Date('2023-01-01T10:00:00Z'),
     modifiedOn: new Date('2023-01-05T15:00:00Z'),
     userDetails: mockUserDetails,
@@ -62,6 +68,8 @@ describe('UsersService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService,
+        SocialMediasService,
+        PostsService,
         {
           provide: getRepositoryToken(Users),
           useValue: mockUsersRepository,
@@ -79,11 +87,13 @@ describe('UsersService', () => {
     }).compile();
 
     userService = module.get<UsersService>(UsersService);
+    postsService = module.get<PostsService>(PostsService);
     userRepository = module.get<Repository<Users>>(getRepositoryToken(Users));
     userDetailsRepository = module.get<Repository<UserDetails>>(
       getRepositoryToken(UserDetails),
     );
     cloudinaryService = module.get<CloudinaryService>(CloudinaryService);
+    socialMediasService = module.get<SocialMediasService>(SocialMediasService);
   });
 
   describe('findById', () => {

@@ -179,4 +179,62 @@ export class SocialMediasService {
       throw new Error(`Failed to send WhatsApp message: ${error.message}`);
     }
   }
+
+  async saveFacebookCredentials(
+    userId: number,
+    appId: string,
+    access_token: string,
+  ) {
+    try {
+      const { id } = await this.platformRepository.findOne({
+        where: { platformName: 'Facebook' },
+      });
+      await this.userSocialMediaCredential.save({
+        userId,
+        platformId: id,
+        verification_code: appId,
+        access_token,
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
+
+  async faceBookPost(
+    message: string,
+    userId: number,
+    contentHistoryId: number,
+  ): Promise<any> {
+    try {
+      const { id } = await this.platformRepository.findOne({
+        where: { platformName: 'Facebook' },
+      });
+      const { verification_code, access_token } = await this.userSocialMediaCredential.findOne({
+        where: {
+          userId,
+          platformId: id,
+        },
+      });
+      let post = await this.postsService.findPostByUserIdAndContentHistoryId(
+        userId,
+        contentHistoryId,
+      );
+
+      if (!post) {
+        post = await this.postsService.createPost({
+          userId,
+          contentHistoryId,
+        });
+      }
+
+      return await this.postsService.createPostOnPostedPaltform(userId, id, post.id);
+
+      
+    } catch (error) {
+      console.log(error);
+      throw new Error(`Failed to post tweet: ${error}`);
+    }
+  }
 }
