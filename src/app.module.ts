@@ -26,13 +26,15 @@ import { userVerifiedPlatformsController } from './userVerifiedPlatforms/userVer
 import { UserVerifiedPlatformsService } from './userVerifiedPlatforms/userVerifiedPlatform.service';
 import { SocialMediaController } from './social-medias/social-medias.controller';
 import { SocialMediasService } from './social-medias/social-medias.service';
-import { HandlebarsAdapter} from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { ContentCategory } from './Content-category/entities/content-category.entity';
 import { ContentCategoryController } from './Content-category/content-category.controller';
 import { ContentCategoryService } from './Content-category/content-category.service';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { join } from 'path';
 import { HttpModule } from '@nestjs/axios';
+import { ScheduleModule } from '@nestjs/schedule';
+import { JobsSchedulerService } from './common/jobs-scheduler.service';
 // import { LoggerService } from './logger/logger.service';
 
 @Module({
@@ -113,6 +115,8 @@ import { HttpModule } from '@nestjs/axios';
         },
       }),
     }),
+
+    ScheduleModule.forRoot(),
   ],
   controllers: [
     AppController,
@@ -134,7 +138,8 @@ import { HttpModule } from '@nestjs/axios';
     CloudinaryService,
     UserVerifiedPlatformsService,
     SocialMediasService,
-    ContentCategoryService
+    ContentCategoryService,
+    JobsSchedulerService,
     // LoggerService
   ],
 })
