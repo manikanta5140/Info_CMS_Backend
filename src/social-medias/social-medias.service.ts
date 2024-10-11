@@ -177,7 +177,6 @@ export class SocialMediasService {
         to: `whatsapp:+91${to}`,
         contentSid,
       };
-
       if (contentVariables) {
         messagePayload.contentVariables = JSON.stringify(contentVariables);
       }
@@ -187,7 +186,6 @@ export class SocialMediasService {
       throw new Error(`Failed to send WhatsApp message: ${error.message}`);
     }
   }
-
   async saveFacebookCredentials(
     userId: number,
     appId: string,
@@ -197,10 +195,11 @@ export class SocialMediasService {
       const platform = await this.platformRepository.findOne({
         where: { platformName: 'Facebook' },
       });
-      const existingUserCredential = await this.userSocialMediaCredential.findOne({
-        where: { userId, platformId: platform.id },
-      });
-  
+      const existingUserCredential =
+        await this.userSocialMediaCredential.findOne({
+          where: { userId, platformId: platform.id },
+        });
+
       if (existingUserCredential) {
         existingUserCredential.verification_code = appId;
         existingUserCredential.access_token = accessToken;
@@ -223,8 +222,6 @@ export class SocialMediasService {
       throw error;
     }
   }
-
-
 
   // async getFaceBookCredentials(
   //   message: string,
@@ -255,7 +252,6 @@ export class SocialMediasService {
 
   //     return await this.postsService.createPostOnPostedPaltform(userId, id, post.id);
 
-      
   //   } catch (error) {
   //     console.log(error);
   //     throw new Error(`Failed to post tweet: ${error}`);
@@ -263,12 +259,15 @@ export class SocialMediasService {
   // }
 
   async findPlaformId(platformName: string): Promise<Platforms> {
-   return await this.platformRepository.findOne({
-      where: { platformName }
+    return await this.platformRepository.findOne({
+      where: { platformName },
     });
   }
 
-  async findSocialMediaCredentials(userId: number, platformId: number): Promise<UserSocialMediaCredential> {
+  async findSocialMediaCredentials(
+    userId: number,
+    platformId: number,
+  ): Promise<UserSocialMediaCredential> {
     return await this.userSocialMediaCredential.findOne({
       where: {
         userId,

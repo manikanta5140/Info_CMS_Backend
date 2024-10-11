@@ -88,15 +88,17 @@ export class UsersService {
   }
 
   async sendOtpOnUserPhoneNumber(mobileNumber: string, userId: number) {
+    console.log(mobileNumber,userId)
     try {
       const OTP = this.randomSixDigitCode();
-      await this.socialMediasService.sendWhatsAppMessage(
+      const res=await this.socialMediasService.sendWhatsAppMessage(
         mobileNumber,
         'HX23f6171dde16160af27b4f1de1ce2e19',
         {
           1: OTP.toString(),
         },
       );
+      console.log(res,"res")
       await this.userDetailsRepository.update(
         { userId },
         { mobileNumberVerificationCode: OTP, mobileNumber },

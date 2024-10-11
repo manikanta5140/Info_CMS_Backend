@@ -13,7 +13,7 @@ export class JobsSchedulerService {
 
     private readonly socialMediasService: SocialMediasService,
   ) {}
-  @Cron(CronExpression.EVERY_DAY_AT_9AM)
+  @Cron(CronExpression.EVERY_DAY_AT_10AM)
   async handleScheduledTask() {
     const userDetails = await this.userDetailsRepository
       .createQueryBuilder('userDetails')
