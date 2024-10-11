@@ -17,8 +17,8 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    private mailService: MailerService
-  ) { }
+    private mailService: MailerService,
+  ) {}
 
   async authenticate(data: LoginDto): Promise<any> {
     try {
@@ -77,14 +77,20 @@ export class AuthService {
     password: string,
     firstName: string,
     lastName: string,
+    profilePhoto?: string,
+    email_verified?: boolean,
   ): Promise<Users> {
     const user = await this.usersService.create({ userName, email, password });
+    await this.usersService.update(user.id, { isVerified: email_verified });
+
     await this.usersService.createUserDetails({
       userId: user.id,
       firstName,
       lastName,
+      profilePhoto
     });
-    return user;
+    const userRes=this.usersService.findById(user.id);
+    return userRes;
   }
 
   async sendVerificationMail(user: Users) {
@@ -92,7 +98,7 @@ export class AuthService {
       const data = await this.signIn({ userId: user.id });
 
       const mailDto: MailDto = {
-        from: "mani@gmail.com",
+        from: 'mani@gmail.com',
         to: user.email,
         subject: 'Your account has been created',
         template: 'verify',
@@ -105,10 +111,6 @@ export class AuthService {
       console.log('Mail response:', response);
     } catch (error) {
       console.error('Error sending verification email:', error);
-
     }
   }
-
-  
-
 }

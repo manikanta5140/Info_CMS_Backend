@@ -143,4 +143,52 @@ export class AuthController {
       throw error;
     }
   }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('store-google-user')
+  async storeGoogleUser(@Body() googleUser: RegisterDto) {
+    try {
+      const {
+        userName,
+        email,
+        password,
+        firstName,
+        lastName,
+        profilePhoto,
+        email_verified,
+      } = googleUser;
+      const existingUser = await this.usersService.findByEmail(email);
+      if (existingUser) {
+        return this.authService.signIn({
+          userId: existingUser.id,
+          userName: userName,
+          email: email,
+          isVerified: email_verified,
+          profilePhoto: profilePhoto,
+        });
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const result = await this.authService.register(
+        userName,
+        email,
+        hashedPassword,
+        firstName,
+        lastName,
+        profilePhoto,
+        email_verified,
+      );
+      // console.log(result);
+      const photoRes = await this.usersService.findById(result?.id);
+      console.log(photoRes);
+      return this.authService.signIn({
+        userId: result?.id,
+        userName: result?.userName,
+        email: result?.email,
+        isVerified: result?.isVerified,
+        profilePhoto: photoRes?.userDetails.profilePhoto,
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
 }
