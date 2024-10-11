@@ -194,56 +194,80 @@ export class SocialMediasService {
     access_token: string,
   ) {
     try {
-      const { id } = await this.platformRepository.findOne({
+      const platform = await this.platformRepository.findOne({
         where: { platformName: 'Facebook' },
       });
-      await this.userSocialMediaCredential.save({
-        userId,
-        platformId: id,
-        verification_code: appId,
-        access_token,
+      const existingUserCredential = await this.userSocialMediaCredential.findOne({
+        where: { userId, platformId: platform.id },
       });
+  
+      if (existingUserCredential) {
+        existingUserCredential.verification_code = appId;
+        existingUserCredential.verification_code = access_token;
+        return await this.userSocialMediaCredential.save(existingUserCredential);
+      } else {
+        return await this.userSocialMediaCredential.save({
+          userId,
+          platformId: platform.id,
+          verification_code: appId,
+          access_token,
+        });
+      }
     } catch (error) {
       throw error;
     }
   }
 
-  async faceBookPost(
-    message: string,
-    userId: number,
-    contentHistoryId: number,
-  ): Promise<any> {
-    try {
-      const { id } = await this.platformRepository.findOne({
-        where: { platformName: 'Facebook' },
-      });
-      const { verification_code, access_token } =
-        await this.userSocialMediaCredential.findOne({
-          where: {
-            userId,
-            platformId: id,
-          },
-        });
-      let post = await this.postsService.findPostByUserIdAndContentHistoryId(
-        userId,
-        contentHistoryId,
-      );
 
-      if (!post) {
-        post = await this.postsService.createPost({
-          userId,
-          contentHistoryId,
-        });
-      }
 
-      return await this.postsService.createPostOnPostedPaltform(
+  // async getFaceBookCredentials(
+  //   message: string,
+  //   userId: number,
+  //   contentHistoryId: number,
+  // ): Promise<any> {
+  //   try {
+  //     const { id } = await this.platformRepository.findOne({
+  //       where: { platformName: 'Facebook' },
+  //     });
+  //     const { verification_code, access_token } = await this.userSocialMediaCredential.findOne({
+  //       where: {
+  //         userId,
+  //         platformId: id,
+  //       },
+  //     });
+  //     let post = await this.postsService.findPostByUserIdAndContentHistoryId(
+  //       userId,
+  //       contentHistoryId,
+  //     );
+
+  //     if (!post) {
+  //       post = await this.postsService.createPost({
+  //         userId,
+  //         contentHistoryId,
+  //       });
+  //     }
+
+  //     return await this.postsService.createPostOnPostedPaltform(userId, id, post.id);
+
+      
+  //   } catch (error) {
+  //     console.log(error);
+  //     throw new Error(`Failed to post tweet: ${error}`);
+  //   }
+  // }
+
+  async findPlaformId(platformName: string): Promise<Platforms> {
+   return await this.platformRepository.findOne({
+      where: { platformName }
+    });
+  }
+
+  async findSocialMediaCredentials(userId: number, platformId: number): Promise<UserSocialMediaCredential> {
+    return await this.userSocialMediaCredential.findOne({
+      where: {
         userId,
-        id,
-        post.id,
-      );
-    } catch (error) {
-      console.log(error);
-      throw new Error(`Failed to post tweet: ${error}`);
-    }
+        platformId,
+      },
+    });
   }
 }

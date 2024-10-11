@@ -14,6 +14,7 @@ import { AuthGuard } from '../auth/auth.guard';
 import { join } from 'path';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
+import { PostsService } from '../posts/posts.service';
 
 @Controller('sm')
 export class SocialMediaController {
@@ -21,6 +22,7 @@ export class SocialMediaController {
     private readonly socialMediasService: SocialMediasService,
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
+    private readonly postsService: PostsService,
   ) {}
 
   @Get('twitter/authorize')
@@ -77,43 +79,54 @@ export class SocialMediaController {
   //   return this.socialMediasService.sendWhatsAppMessage(to, message);
   // }
 
-@Post('facebook/credentials')
-async saveCredentials(@Body() body, @Req() req) {
-  try{
-    await this.socialMediasService.saveFacebookCredentials(
-      req.user.userId, 
-      body.appId, 
-      body.access_token
-    );
-  }catch(error){
-    throw error;
+  @UseGuards(AuthGuard)
+  @Post('facebook/credentials')
+  async saveCredentials(@Body() body, @Req() req) {
+    try {
+      return await this.socialMediasService.saveFacebookCredentials(
+        req?.user?.userId,
+        body.appId,
+        body.access_token,
+      ); 
+    } catch (error) {
+      throw error;
+    }
   }
-}
 
+  @UseGuards(AuthGuard)
+  @Post('facebook/post')
+  async postFacebookPost(
+    @Body('message') message: string,
+    @Req() req,
+    @Body('contentHistoryId') contentHistoryId: number, 
+  ) {
+    try {
+      const { id } = await this.socialMediasService.findPlaformId('Facebook');
 
-  // @Post('facebook/post')
-  // async postFacebookPost(
-  //   @Body('message') message: string,
-  //   @Req() req,
-  //   @Body('contentHistoryId') contentHistoryId: number,
-  // ) {
-
-
-  //   // const pageId = this.configService.get<string>('FACEBOOK_APP_ID'); 
-  //   // const accessToken = this.configService.get<string>('FACEBOOK_ACCESS_TOKEN'); 
-  //   // const url = `https://graph.facebook.com/v21.0/${pageId}/feed?message=${body.message}&access_token=${accessToken}`;
-
-  //   try {
-  //     const response = await this.httpService
-  //       .post(
-  //         url
-  //       )
-  //       .toPromise();
-  //     console.log(response.data);
-  //     return { success: true, message: 'Post published successfully!' };
-  //   } catch (error) {
-  //     console.error('Error posting to Facebook:', error.message);
-  //     return { success: false, message: 'Failed to publish post.' };
-  //   }
-  // }
+      const { verification_code, access_token } =
+        await this.socialMediasService.findSocialMediaCredentials(
+          req.user.userId,
+          id,
+        );
+      console.log(verification_code,access_token,message);  
+      const url = `https://graph.facebook.com/v21.0/${verification_code}/feed?message=${message}&access_token=${access_token}`;
+      const response = await this.httpService.post(url).toPromise();
+      console.log(response.data);
+      if (response) {
+        const post = await this.postsService.createPost({
+          userId: req?.user?.userId,
+          contentHistoryId,
+        });
+        await this.postsService.createPostOnPostedPaltform(
+          req.user.userId,
+          id,
+          post.id,
+        );
+      }
+      return { success: true, message: 'Post published successfully!' };
+    } catch (error) {
+      console.error('Error posting to Facebook:', error.message);
+      return { success: false, message: 'Failed to publish post.' };
+    }
+  }
 }
