@@ -191,7 +191,7 @@ export class SocialMediasService {
   async saveFacebookCredentials(
     userId: number,
     appId: string,
-    access_token: string,
+    accessToken: string,
   ) {
     try {
       const platform = await this.platformRepository.findOne({
@@ -203,14 +203,20 @@ export class SocialMediasService {
   
       if (existingUserCredential) {
         existingUserCredential.verification_code = appId;
-        existingUserCredential.verification_code = access_token;
+        existingUserCredential.access_token = accessToken;
         return await this.userSocialMediaCredential.save(existingUserCredential);
+        
       } else {
+        await this.userVerifiedPlatformRepository.save({
+          userId,
+          platformId: platform.id,
+          isVerified: true,
+        });
         return await this.userSocialMediaCredential.save({
           userId,
           platformId: platform.id,
           verification_code: appId,
-          access_token,
+          access_token: accessToken,
         });
       }
     } catch (error) {
