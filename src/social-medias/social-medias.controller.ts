@@ -86,7 +86,7 @@ export class SocialMediaController {
       return await this.socialMediasService.saveFacebookCredentials(
         req?.user?.userId,
         body.appId,
-        body.access_token,
+        body.accessToken,
       ); 
     } catch (error) {
       throw error;
