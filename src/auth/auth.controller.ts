@@ -62,6 +62,7 @@ export class AuthController {
         userName: result?.userName,
         email: result?.email,
         isVerified: result?.isVerified,
+        isMobileVerified: result?.isMobileVerified,
         profilePhoto:
           'https://res.cloudinary.com/djyryzj1u/image/upload/v1728117185/aohrbick0qczyobxrhzv.webp',
       });

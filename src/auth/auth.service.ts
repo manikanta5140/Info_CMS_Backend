@@ -53,6 +53,7 @@ export class AuthService {
           email: user?.email,
           profilePhoto: user?.userDetails?.profilePhoto,
           isVerified: user?.isVerified,
+          isMobileVerified: user?.isMobileVerified
         };
       }
       throw new UnauthorizedException('Incorrect password !!');
