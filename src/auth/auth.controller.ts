@@ -23,6 +23,7 @@ import { JwtService } from '@nestjs/jwt';
 import { throwError } from 'rxjs';
 import { join } from 'path';
 import { AuthGuard } from './auth.guard';
+import { LoggerService } from 'src/logger/logger.service';
 
 @Controller('auth')
 export class AuthController {
@@ -30,7 +31,7 @@ export class AuthController {
     private authService: AuthService,
     private usersService: UsersService,
     private jwtService: JwtService,
-    // private readonly logger: LoggerService
+    private readonly loggerService: LoggerService
   ) { }
 
   @Post('register')
@@ -77,7 +78,8 @@ export class AuthController {
     try {
       return await this.authService.authenticate(loginDto);
     } catch (error) {
-      // this.logger.log(error);
+      console.log(error)
+      this.loggerService.error(error,'AiBookController.getBooksBySubject()');
       throw error;
     }
   }

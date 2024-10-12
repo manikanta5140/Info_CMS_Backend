@@ -38,7 +38,7 @@ import { JobsSchedulerService } from './common/jobs-scheduler.service';
 import { PostsScheduler } from './posts-scheduler/entity/posts-scheduler.entity';
 import { PostsSchedulerController } from './posts-scheduler/posts-scheduler.controller';
 import { PostsSchedulerService } from './posts-scheduler/posts-scheduler.service';
-// import { LoggerService } from './logger/logger.service';
+import { LoggerService } from './logger/logger.service';
 
 @Module({
   imports: [
@@ -147,7 +147,7 @@ import { PostsSchedulerService } from './posts-scheduler/posts-scheduler.service
     ContentCategoryService,
     JobsSchedulerService,
     PostsSchedulerService,
-    // LoggerService
+    LoggerService
   ],
 })
 export class AppModule {}

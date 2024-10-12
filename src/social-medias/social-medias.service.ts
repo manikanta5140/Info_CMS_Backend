@@ -8,6 +8,7 @@ import { UserVerifiedPlatform } from '../userVerifiedPlatforms/entity/user-verif
 import { Posts } from '../posts/entities/posts.entity';
 import { PostsService } from '../posts/posts.service';
 import * as Twilio from 'twilio';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class SocialMediasService {
@@ -16,6 +17,7 @@ export class SocialMediasService {
 
   constructor(
     private readonly postsService: PostsService,
+    private readonly httpService: HttpService,
 
     @InjectRepository(UserSocialMediaCredential)
     private userSocialMediaCredential: Repository<UserSocialMediaCredential>,
@@ -223,41 +225,6 @@ export class SocialMediasService {
     }
   }
 
-  // async getFaceBookCredentials(
-  //   message: string,
-  //   userId: number,
-  //   contentHistoryId: number,
-  // ): Promise<any> {
-  //   try {
-  //     const { id } = await this.platformRepository.findOne({
-  //       where: { platformName: 'Facebook' },
-  //     });
-  //     const { verification_code, access_token } = await this.userSocialMediaCredential.findOne({
-  //       where: {
-  //         userId,
-  //         platformId: id,
-  //       },
-  //     });
-  //     let post = await this.postsService.findPostByUserIdAndContentHistoryId(
-  //       userId,
-  //       contentHistoryId,
-  //     );
-
-  //     if (!post) {
-  //       post = await this.postsService.createPost({
-  //         userId,
-  //         contentHistoryId,
-  //       });
-  //     }
-
-  //     return await this.postsService.createPostOnPostedPaltform(userId, id, post.id);
-
-  //   } catch (error) {
-  //     console.log(error);
-  //     throw new Error(`Failed to post tweet: ${error}`);
-  //   }
-  // }
-
   async findPlaformId(platformName: string): Promise<Platforms> {
     return await this.platformRepository.findOne({
       where: { platformName },
@@ -274,5 +241,40 @@ export class SocialMediasService {
         platformId,
       },
     });
+  }
+
+  async postFacebookPost(
+    message: string,
+    userId: number,
+    contentHistoryId: number,
+  ){
+    try {
+      const { id } = await this.findPlaformId('Facebook');
+
+      const { verification_code, access_token } =
+        await this.findSocialMediaCredentials(
+          userId,
+          id,
+        );
+      console.log(verification_code,access_token,message);  
+      const url = `https://graph.facebook.com/v21.0/${verification_code}/feed?message=${message}&access_token=${access_token}`;
+      const response = await this.httpService.post(url).toPromise();
+      console.log(response.data);
+      if (response) {
+        const post = await this.postsService.createPost({
+          userId: userId,
+          contentHistoryId,
+        });
+        await this.postsService.createPostOnPostedPaltform(
+          userId,
+          id,
+          post.id,
+        );
+      }
+      return { success: true, message: 'Post published successfully!' };
+    } catch (error) {
+      console.error('Error posting to Facebook:', error.message);
+      return { success: false, message: 'Failed to publish post.' };
+    }
   }
 }

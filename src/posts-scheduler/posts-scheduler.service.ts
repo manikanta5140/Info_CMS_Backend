@@ -83,6 +83,15 @@ export class PostsSchedulerService {
         }
 
         case 'Facebook': {
+          const message = contentHistory.content.slice(0, 50);
+          this.socialMediasSerive
+            .postFacebookPost(
+              message,
+              users.id,
+              contentHistory.id,
+            )
+            .then(() => {})
+            .catch((err) => console.error(err));
         }
       }
     }

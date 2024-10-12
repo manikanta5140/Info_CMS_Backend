@@ -101,29 +101,7 @@ export class SocialMediaController {
     @Body('contentHistoryId') contentHistoryId: number, 
   ) {
     try {
-      const { id } = await this.socialMediasService.findPlaformId('Facebook');
-
-      const { verification_code, access_token } =
-        await this.socialMediasService.findSocialMediaCredentials(
-          req.user.userId,
-          id,
-        );
-      console.log(verification_code,access_token,message);  
-      const url = `https://graph.facebook.com/v21.0/${verification_code}/feed?message=${message}&access_token=${access_token}`;
-      const response = await this.httpService.post(url).toPromise();
-      console.log(response.data);
-      if (response) {
-        const post = await this.postsService.createPost({
-          userId: req?.user?.userId,
-          contentHistoryId,
-        });
-        await this.postsService.createPostOnPostedPaltform(
-          req.user.userId,
-          id,
-          post.id,
-        );
-      }
-      return { success: true, message: 'Post published successfully!' };
+      return this.socialMediasService.postFacebookPost(message,req?.user?.userId,contentHistoryId)
     } catch (error) {
       console.error('Error posting to Facebook:', error.message);
       return { success: false, message: 'Failed to publish post.' };
