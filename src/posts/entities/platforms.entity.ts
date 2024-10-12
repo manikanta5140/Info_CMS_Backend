@@ -6,12 +6,13 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
-  OneToOne,
+  ManyToMany,
 } from 'typeorm';
 import { Posts } from './posts.entity';
 import { PostedPlatforms } from './posted-platforms.entity';
 import { UserVerifiedPlatform } from '../../userVerifiedPlatforms/entity/user-verified-platform.entity';
 import { UserSocialMediaCredential } from '../../social-medias/DTOs/user-social-media-credential.entity';
+import { PostsScheduler } from 'src/posts-scheduler/entity/posts-scheduler.entity';
 
 @Entity('platforms')
 @Unique(['platformName'])
@@ -54,4 +55,7 @@ export class Platforms {
     (userVerifiedPlatform) => userVerifiedPlatform.user,
   )
   socialMediaCredentials: UserSocialMediaCredential[];
+
+  @OneToMany(() => PostsScheduler, (postsScheduler) => postsScheduler.platforms)
+  scheduledPostPlatform: PostsScheduler[];
 }

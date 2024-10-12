@@ -14,6 +14,7 @@ import { Posts } from '../../posts/entities/posts.entity';
 import { PostedPlatforms } from '../../posts/entities/posted-platforms.entity';
 import { UserVerifiedPlatform } from '../../userVerifiedPlatforms/entity/user-verified-platform.entity';
 import { UserSocialMediaCredential } from '../../social-medias/DTOs/user-social-media-credential.entity';
+import { PostsScheduler } from 'src/posts-scheduler/entity/posts-scheduler.entity';
 
 @Entity('users')
 @Unique(['userName', 'email'])
@@ -72,4 +73,10 @@ export class Users {
     (userVerifiedPlatform) => userVerifiedPlatform.user,
   )
   socialMediaCredentials: UserSocialMediaCredential[];
+
+  @OneToMany(
+    () => PostsScheduler,
+    (userScheduledPosts) => userScheduledPosts.id,
+  )
+  scheduledPosts: PostsScheduler[];
 }

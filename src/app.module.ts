@@ -35,6 +35,9 @@ import { join } from 'path';
 import { HttpModule } from '@nestjs/axios';
 import { ScheduleModule } from '@nestjs/schedule';
 import { JobsSchedulerService } from './common/jobs-scheduler.service';
+import { PostsScheduler } from './posts-scheduler/entity/posts-scheduler.entity';
+import { PostsSchedulerController } from './posts-scheduler/posts-scheduler.controller';
+import { PostsSchedulerService } from './posts-scheduler/posts-scheduler.service';
 // import { LoggerService } from './logger/logger.service';
 
 @Module({
@@ -63,6 +66,7 @@ import { JobsSchedulerService } from './common/jobs-scheduler.service';
           PostedPlatforms,
           UserVerifiedPlatform,
           UserSocialMediaCredential,
+          PostsScheduler,
         ],
         synchronize: true,
       }),
@@ -78,6 +82,7 @@ import { JobsSchedulerService } from './common/jobs-scheduler.service';
       UserVerifiedPlatform,
       UserSocialMediaCredential,
       PostedPlatforms,
+      PostsScheduler,
     ]),
 
     // JwtModule Configuration
@@ -127,6 +132,7 @@ import { JobsSchedulerService } from './common/jobs-scheduler.service';
     userVerifiedPlatformsController,
     SocialMediaController,
     ContentCategoryController,
+    PostsSchedulerController,
   ],
   providers: [
     AppService,
@@ -140,6 +146,7 @@ import { JobsSchedulerService } from './common/jobs-scheduler.service';
     SocialMediasService,
     ContentCategoryService,
     JobsSchedulerService,
+    PostsSchedulerService,
     // LoggerService
   ],
 })
