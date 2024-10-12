@@ -53,7 +53,4 @@ export class Posts {
   @OneToOne(() => ContentHistory, (contentHistory) => contentHistory.posts)
   @JoinColumn([{ name: 'contentHistoryId', referencedColumnName: 'id' }])
   contentHistory: ContentHistory;
-
-  @OneToMany(() => PostsScheduler, (scheduledPost) => scheduledPost.posts)
-  scheduledPost: PostsScheduler[];
 }

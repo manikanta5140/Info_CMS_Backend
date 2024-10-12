@@ -7,11 +7,13 @@ import {
   ManyToOne,
   JoinColumn,
   OneToOne,
+  OneToMany,
 } from 'typeorm';
 import { Users } from '../../users/entities/users.entity';
 
 import { Posts } from '../../posts/entities/posts.entity';
 import { ContentCategory } from '../../Content-category/entities/content-category.entity';
+import { PostsScheduler } from 'src/posts-scheduler/entity/posts-scheduler.entity';
 @Entity('content_history')
 export class ContentHistory {
   @PrimaryGeneratedColumn()
@@ -31,7 +33,7 @@ export class ContentHistory {
 
   @Column()
   slug: string;
-  
+
   @Column({ nullable: true })
   inputLable1Text: string;
 
@@ -64,4 +66,10 @@ export class ContentHistory {
 
   @OneToOne(() => Posts, (posts) => posts.contentHistory)
   posts: Posts;
+
+  @OneToMany(
+    () => PostsScheduler,
+    (scheduledPost) => scheduledPost.contentHistory,
+  )
+  scheduledPost: PostsScheduler[];
 }

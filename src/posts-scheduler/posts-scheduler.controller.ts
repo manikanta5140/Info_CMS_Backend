@@ -20,7 +20,7 @@ export class PostsSchedulerController {
   async schedulePost(
     @Req() req,
     @Body('platformIds') platformIds: number[],
-    @Body('postId') postId: number,
+    @Body('contentHistoryId') contentHistoryId: number,
     @Body('scheduledDate') scheduledDate: string,
     @Body('scheduledTime') scheduledTime: string,
   ) {
@@ -28,7 +28,7 @@ export class PostsSchedulerController {
       return this.postSchedulerService.schedulePost(
         req.user.userId,
         platformIds,
-        postId,
+        contentHistoryId,
         scheduledDate,
         scheduledTime,
       );

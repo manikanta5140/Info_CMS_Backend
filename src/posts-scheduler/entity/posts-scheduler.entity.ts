@@ -1,3 +1,4 @@
+import { ContentHistory } from 'src/content-history/entities/content-history.entity';
 import { Platforms } from 'src/posts/entities/platforms.entity';
 import { Posts } from 'src/posts/entities/posts.entity';
 import { Users } from 'src/users/entities/users.entity';
@@ -28,7 +29,7 @@ export class PostsScheduler {
   scheduledDate: string;
 
   @Column()
-  postId: number;
+  contentHistoryId: number;
 
   @Column({ type: 'time' })
   scheduledTime: string;
@@ -54,7 +55,10 @@ export class PostsScheduler {
   @JoinColumn([{ name: 'platformId', referencedColumnName: 'id' }])
   platforms: Platforms;
 
-  @ManyToOne(() => Posts, (posts) => posts.scheduledPost)
-  @JoinColumn([{ name: 'postId', referencedColumnName: 'id' }])
-  posts: Posts;
+  @ManyToOne(
+    () => ContentHistory,
+    (contentHistory) => contentHistory.scheduledPost,
+  )
+  @JoinColumn([{ name: 'contentHistoryId', referencedColumnName: 'id' }])
+  contentHistory: ContentHistory;
 }

@@ -27,7 +27,7 @@ export class PostsSchedulerService {
   async schedulePost(
     userId: number,
     platformIds: number[],
-    postId: number,
+    contentHistoryId: number,
     scheduledDate: string,
     scheduledTime: string,
   ) {
@@ -36,7 +36,7 @@ export class PostsSchedulerService {
         return this.postsSchedulerRepository.save({
           userId,
           platformId,
-          postId,
+          contentHistoryId,
           scheduledDate,
           scheduledTime,
         });
@@ -61,20 +61,22 @@ export class PostsSchedulerService {
         scheduledDate: currentTime.toISOString().split('T')[0],
         scheduledTime: `${currentHours}:${currentMinutes}`,
       },
-      relations: ['users', 'platforms', 'posts', 'posts.contentHistory'],
+      relations: ['users', 'platforms', 'contentHistory'],
     });
 
+    console.log(scheduledPosts);
+
     for (const schedule of scheduledPosts) {
-      const { users, platforms, posts } = schedule;
+      const { users, platforms, contentHistory } = schedule;
 
       switch (platforms.platformName) {
         case 'Twitter': {
-          const message = posts.contentHistory.content.slice(0, 50);
+          const message = contentHistory.content.slice(0, 50);
           this.socialMediasSerive
             .postTwitterTweetOnBehalfOfUser(
               message,
               users.id,
-              posts.contentHistory.id,
+              contentHistory.id,
             )
             .then(() => {})
             .catch((err) => console.error(err));
@@ -83,10 +85,6 @@ export class PostsSchedulerService {
         case 'Facebook': {
         }
       }
-
-      console.log(
-        `Posting "${posts.contentHistory.content}" for user "${users.userName}" on platform "${platforms.platformName}"`,
-      );
     }
   }
 }
