@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserDetails } from './entities/user-details.entity';
 import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
-import { SocialMediasService } from 'src/social-medias/social-medias.service';
+import { SocialMediasService } from '../social-medias/social-medias.service';
 
 @Injectable()
 export class UsersService {
@@ -58,6 +58,7 @@ export class UsersService {
     updatedUser: Partial<UserDetails>,
     profilePhoto?: Express.Multer.File,
   ) {
+    console.log(id, updatedUser, profilePhoto);
     if (profilePhoto) {
       let cloudinaryResponse: UploadApiResponse | UploadApiErrorResponse;
       cloudinaryResponse =
@@ -86,14 +87,21 @@ export class UsersService {
     }
   }
 
-  async verifyUserPhoneNumber(mobileNumber: string, userId: number) {
+  async sendOtpOnUserPhoneNumber(mobileNumber: string, userId: number) {
+    console.log(mobileNumber,userId)
     try {
-      let OTP = this.randomSixDigitCode();
-      const message = `Your verification code is ${OTP}. Please enter this code in the app to verify your account.`;
-      this.socialMediasService.sendWhatsAppMessage(mobileNumber, message);
+      const OTP = this.randomSixDigitCode();
+      const res=await this.socialMediasService.sendWhatsAppMessage(
+        mobileNumber,
+        'HX23f6171dde16160af27b4f1de1ce2e19',
+        {
+          1: OTP.toString(),
+        },
+      );
+      console.log(res,"res")
       await this.userDetailsRepository.update(
         { userId },
-        { mobileNumberVerificationCode: OTP },
+        { mobileNumberVerificationCode: OTP, mobileNumber },
       );
       return { status: 'success' };
     } catch (err) {
@@ -103,5 +111,20 @@ export class UsersService {
 
   randomSixDigitCode() {
     return Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+  }
+
+  async verifyUsersWhatsappOtp(userId: number, verificationCode: number) {
+    const userDetails = await this.userDetailsRepository.findOne({
+      where: { userId },
+    });
+    if (userDetails.mobileNumberVerificationCode == verificationCode) {
+      await this.usersRepository.update(userId, { isMobileVerified: true });
+      return {
+        status: 'success',
+        message: 'mobile number verified successfully',
+      };
+    }
+
+    throw new Error('Mobile number verification failed');
   }
 }

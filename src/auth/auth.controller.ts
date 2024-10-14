@@ -23,6 +23,7 @@ import { JwtService } from '@nestjs/jwt';
 import { throwError } from 'rxjs';
 import { join } from 'path';
 import { AuthGuard } from './auth.guard';
+import { LoggerService } from 'src/logger/logger.service';
 
 @Controller('auth')
 export class AuthController {
@@ -30,7 +31,7 @@ export class AuthController {
     private authService: AuthService,
     private usersService: UsersService,
     private jwtService: JwtService,
-    // private readonly logger: LoggerService
+    private readonly loggerService: LoggerService
   ) { }
 
   @Post('register')
@@ -62,6 +63,7 @@ export class AuthController {
         userName: result?.userName,
         email: result?.email,
         isVerified: result?.isVerified,
+        isMobileVerified: result?.isMobileVerified,
         profilePhoto:
           'https://res.cloudinary.com/djyryzj1u/image/upload/v1728117185/aohrbick0qczyobxrhzv.webp',
       });
@@ -76,7 +78,8 @@ export class AuthController {
     try {
       return await this.authService.authenticate(loginDto);
     } catch (error) {
-      // this.logger.log(error);
+      console.log(error)
+      this.loggerService.error(error,'AiBookController.getBooksBySubject()');
       throw error;
     }
   }
@@ -124,6 +127,26 @@ export class AuthController {
     }
   }
 
+  @Get('isvalid-user/:token')
+  async isValidUser(@Param('token') token: string) {
+    try {
+      const tokenPayload = await this.jwtService.verifyAsync(token);
+      if (!tokenPayload || !tokenPayload.sub) {
+        throw new BadRequestException('Invalid token !!');
+      }
+      const user = await this.usersService.findById(tokenPayload.sub);
+      if (!user?.isVerified) {
+          throw new BadRequestException("User is not verified !!")
+      }
+      return {
+        status: HttpStatus.OK,
+        message: 'Valid User!!',
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
   @HttpCode(HttpStatus.OK)
   @Post('store-google-user')
   async storeGoogleUser(@Body() googleUser: RegisterDto) {
@@ -137,9 +160,7 @@ export class AuthController {
         profilePhoto,
         email_verified,
       } = googleUser;
-
       const existingUser = await this.usersService.findByEmail(email);
-
       if (existingUser) {
         return this.authService.signIn({
           userId: existingUser.id,
@@ -162,7 +183,6 @@ export class AuthController {
       // console.log(result);
       const photoRes = await this.usersService.findById(result?.id);
       console.log(photoRes);
-
       return this.authService.signIn({
         userId: result?.id,
         userName: result?.userName,

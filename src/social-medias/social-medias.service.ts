@@ -8,6 +8,7 @@ import { UserVerifiedPlatform } from '../userVerifiedPlatforms/entity/user-verif
 import { Posts } from '../posts/entities/posts.entity';
 import { PostsService } from '../posts/posts.service';
 import * as Twilio from 'twilio';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class SocialMediasService {
@@ -16,6 +17,7 @@ export class SocialMediasService {
 
   constructor(
     private readonly postsService: PostsService,
+    private readonly httpService: HttpService,
 
     @InjectRepository(UserSocialMediaCredential)
     private userSocialMediaCredential: Repository<UserSocialMediaCredential>,
@@ -166,17 +168,113 @@ export class SocialMediasService {
     }
   }
 
-  async sendWhatsAppMessage(to: string, message: string) {
+  async sendWhatsAppMessage(
+    to: string,
+    contentSid: string,
+    contentVariables?: Record<string, string | number>,
+  ) {
     try {
-      const response = await this.twilioClient.messages.create({
-        body: message,
+      const messagePayload: any = {
         from: 'whatsapp:+14155238886',
-        to: `whatsapp:${`+91` + to}`,
-      });
-      console.log(response);
-      return response;
+        to: `whatsapp:+91${to}`,
+        contentSid,
+      };
+      if (contentVariables) {
+        messagePayload.contentVariables = JSON.stringify(contentVariables);
+      }
+      console.log(await this.twilioClient.messages.create(messagePayload));
+      return;
     } catch (error) {
       throw new Error(`Failed to send WhatsApp message: ${error.message}`);
+    }
+  }
+  async saveFacebookCredentials(
+    userId: number,
+    appId: string,
+    accessToken: string,
+  ) {
+    try {
+      const platform = await this.platformRepository.findOne({
+        where: { platformName: 'Facebook' },
+      });
+      const existingUserCredential =
+        await this.userSocialMediaCredential.findOne({
+          where: { userId, platformId: platform.id },
+        });
+
+      if (existingUserCredential) {
+        existingUserCredential.verification_code = appId;
+        existingUserCredential.access_token = accessToken;
+        return await this.userSocialMediaCredential.save(existingUserCredential);
+        
+      } else {
+        await this.userVerifiedPlatformRepository.save({
+          userId,
+          platformId: platform.id,
+          isVerified: true,
+        });
+        return await this.userSocialMediaCredential.save({
+          userId,
+          platformId: platform.id,
+          verification_code: appId,
+          access_token: accessToken,
+        });
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async findPlaformId(platformName: string): Promise<Platforms> {
+    return await this.platformRepository.findOne({
+      where: { platformName },
+    });
+  }
+
+  async findSocialMediaCredentials(
+    userId: number,
+    platformId: number,
+  ): Promise<UserSocialMediaCredential> {
+    return await this.userSocialMediaCredential.findOne({
+      where: {
+        userId,
+        platformId,
+      },
+    });
+  }
+
+  async postFacebookPost(
+    message: string,
+    userId: number,
+    contentHistoryId: number,
+  ){
+    try {
+      const { id } = await this.findPlaformId('Facebook');
+
+      const { verification_code, access_token } =
+        await this.findSocialMediaCredentials(
+          userId,
+          id,
+        );
+      console.log(verification_code,access_token,message);  
+      const url = `https://graph.facebook.com/v21.0/${verification_code}/feed?message=${message}&access_token=${access_token}`;
+      const response = await this.httpService.post(url).toPromise();
+      console.log(response.data);
+      if (response) {
+        const post = await this.postsService.createPost({
+          userId: userId,
+          contentHistoryId,
+        });
+        await this.postsService.createPostOnPostedPaltform(
+          userId,
+          id,
+          post.id,
+        );
+      }
+      return { success: true, message: 'Post published successfully!' };
+    } catch (error) {
+      console.error('Error posting to Facebook:', error.message);
+      return { success: false, message: 'Failed to publish post.' };
     }
   }
 }

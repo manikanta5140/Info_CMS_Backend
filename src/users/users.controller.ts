@@ -49,10 +49,11 @@ export class UsersController {
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('profilePhoto'))
   async updateUser(
-    @Req() req,
+    @Req() req: any,
     @Body() updateUserDetails: Partial<UserDetails>,
     @UploadedFile() profilePhoto: Express.Multer.File,
   ) {
+    console.log(req.user.userId, updateUserDetails, profilePhoto);
     try {
       const result = await this.usersService.updateUserDetails(
         req.user.userId,
@@ -73,13 +74,26 @@ export class UsersController {
 
   @Post('send-whatsapp-verification-token')
   @UseGuards(AuthGuard)
-  async verifyUserPhoneNumber(
+  async sendOtpOnUserPhoneNumber(
     @Req() req,
     @Body('mobileNumber') mobileNumber: string,
   ) {
-    return await this.usersService.verifyUserPhoneNumber(
+    return await this.usersService.sendOtpOnUserPhoneNumber(
       mobileNumber,
       req.user.userId,
+    );
+  }
+
+  @Post('verify-whatsapp-verification-token')
+  @UseGuards(AuthGuard)
+  @HttpCode(200)
+  async verifyUsersWhatsappOtp(
+    @Body('verificationCode') verificationCode: number,
+    @Req() req,
+  ) {
+    return this.usersService.verifyUsersWhatsappOtp(
+      req.user.userId,
+      verificationCode,
     );
   }
 }

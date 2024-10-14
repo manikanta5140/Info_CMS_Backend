@@ -7,17 +7,21 @@ import {
   Get,
   Param,
   Patch,
-  Delete,
+  Delete
 } from '@nestjs/common';
 import { ContentHistoryDto } from './DTOs/content-history.dto';
 import { ContentHistoryService } from './content-history.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { UpdateContentHistoryDto } from './DTOs/update-content-history.dto';
 import { ContentHistory } from './entities/content-history.entity';
+import { LoggerService } from 'src/logger/logger.service';
 
 @Controller('content-history')
 export class ContentHistoryController {
-  constructor(private contentHistoryService: ContentHistoryService) {}
+  constructor(
+    private contentHistoryService: ContentHistoryService,
+    private readonly loggerService: LoggerService
+  ) {}
 
   @UseGuards(AuthGuard)
   @Post()
@@ -26,6 +30,7 @@ export class ContentHistoryController {
       contentHistoryDto.userId = req?.user?.userId;
       return await this.contentHistoryService.create(contentHistoryDto);
     }catch(error){
+      this.loggerService.error(error,'ContentHistoryController.create()');
       throw error;
     }
   }

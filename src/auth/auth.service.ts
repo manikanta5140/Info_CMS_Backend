@@ -17,8 +17,8 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    private mailService: MailerService
-  ) { }
+    private mailService: MailerService,
+  ) {}
 
   async authenticate(data: LoginDto): Promise<any> {
     try {
@@ -53,6 +53,7 @@ export class AuthService {
           email: user?.email,
           profilePhoto: user?.userDetails?.profilePhoto,
           isVerified: user?.isVerified,
+          isMobileVerified: user?.isMobileVerified
         };
       }
       throw new UnauthorizedException('Incorrect password !!');
@@ -101,7 +102,7 @@ export class AuthService {
       const data = await this.signIn({ userId: user.id });
 
       const mailDto: MailDto = {
-        from: "mani@gmail.com",
+        from: 'mani@gmail.com',
         to: user.email,
         subject: 'Your account has been created',
         template: 'verify',
@@ -114,8 +115,6 @@ export class AuthService {
       console.log('Mail response:', response);
     } catch (error) {
       console.error('Error sending verification email:', error);
-
     }
   }
-
 }

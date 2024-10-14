@@ -26,14 +26,19 @@ import { userVerifiedPlatformsController } from './userVerifiedPlatforms/userVer
 import { UserVerifiedPlatformsService } from './userVerifiedPlatforms/userVerifiedPlatform.service';
 import { SocialMediaController } from './social-medias/social-medias.controller';
 import { SocialMediasService } from './social-medias/social-medias.service';
-import { HandlebarsAdapter} from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { ContentCategory } from './Content-category/entities/content-category.entity';
 import { ContentCategoryController } from './Content-category/content-category.controller';
 import { ContentCategoryService } from './Content-category/content-category.service';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { join } from 'path';
 import { HttpModule } from '@nestjs/axios';
-// import { LoggerService } from './logger/logger.service';
+import { ScheduleModule } from '@nestjs/schedule';
+import { JobsSchedulerService } from './common/jobs-scheduler.service';
+import { PostsScheduler } from './posts-scheduler/entity/posts-scheduler.entity';
+import { PostsSchedulerController } from './posts-scheduler/posts-scheduler.controller';
+import { PostsSchedulerService } from './posts-scheduler/posts-scheduler.service';
+import { LoggerService } from './logger/logger.service';
 
 @Module({
   imports: [
@@ -61,6 +66,7 @@ import { HttpModule } from '@nestjs/axios';
           PostedPlatforms,
           UserVerifiedPlatform,
           UserSocialMediaCredential,
+          PostsScheduler,
         ],
         synchronize: true,
       }),
@@ -76,6 +82,7 @@ import { HttpModule } from '@nestjs/axios';
       UserVerifiedPlatform,
       UserSocialMediaCredential,
       PostedPlatforms,
+      PostsScheduler,
     ]),
 
     // JwtModule Configuration
@@ -113,6 +120,8 @@ import { HttpModule } from '@nestjs/axios';
         },
       }),
     }),
+
+    ScheduleModule.forRoot(),
   ],
   controllers: [
     AppController,
@@ -123,6 +132,7 @@ import { HttpModule } from '@nestjs/axios';
     userVerifiedPlatformsController,
     SocialMediaController,
     ContentCategoryController,
+    PostsSchedulerController,
   ],
   providers: [
     AppService,
@@ -134,8 +144,10 @@ import { HttpModule } from '@nestjs/axios';
     CloudinaryService,
     UserVerifiedPlatformsService,
     SocialMediasService,
-    ContentCategoryService
-    // LoggerService
+    ContentCategoryService,
+    JobsSchedulerService,
+    PostsSchedulerService,
+    LoggerService
   ],
 })
 export class AppModule {}
